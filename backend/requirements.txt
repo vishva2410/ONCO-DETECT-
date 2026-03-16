@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+groq
+python-dotenv
+reportlab==4.1.0
