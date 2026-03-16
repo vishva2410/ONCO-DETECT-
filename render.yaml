@@ -16,12 +16,11 @@ services:
     plan: free
 
   # Frontend — React Static
-  - type: web
+  - type: static_site
     name: oncodetect
-    runtime: static
     rootDir: frontend
     buildCommand: npm install --legacy-peer-deps && npm run build
-    staticPublishPath: dist
+    publishPath: dist
     envVars:
       - key: VITE_API_URL
         value: https://oncodetect-api.onrender.com
@@ -29,4 +28,3 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
-    plan: free
