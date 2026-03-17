@@ -1,372 +1,321 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-00D4A8?style=for-the-badge&logo=moleculer&logoColor=white" alt="OncoDetect Badge" />
+  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-b9ef58?style=for-the-badge&logo=moleculer&logoColor=11130f" alt="OncoDetect Badge" />
 </p>
 
-<h1 align="center">
-  🧬 OncoDetect
-</h1>
+<h1 align="center">OncoDetect</h1>
 
 <p align="center">
-  <b>AI-Powered Multi-Organ Cancer Triage System</b><br/>
-  <sub>Intelligent clinical decision support • LLM-backed reasoning • Real-time analysis pipeline</sub>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black" />
-  <img src="https://img.shields.io/badge/Vite_8-646CFF?style=flat-square&logo=vite&logoColor=white" />
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/Groq_API-FF6B35?style=flat-square&logo=lightning&logoColor=white" />
-  <img src="https://img.shields.io/badge/Llama_3.3_70B-7C3AED?style=flat-square&logo=meta&logoColor=white" />
-  <img src="https://img.shields.io/badge/Framer_Motion-E91E63?style=flat-square&logo=framer&logoColor=white" />
-  <img src="https://img.shields.io/badge/Chart.js-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" />
+  <b>AI-assisted multi-organ cancer triage workspace</b><br />
+  <sub>Clinical intake • imaging signal simulation • LLM reasoning • self-audited reporting</sub>
 </p>
 
 <p align="center">
-  <a href="#-features">Features</a> •
-  <a href="#%EF%B8%8F-architecture">Architecture</a> •
-  <a href="#-pipeline-flow">Pipeline</a> •
-  <a href="#-tech-stack">Stack</a> •
-  <a href="#-quick-start">Setup</a> •
-  <a href="#-deployment">Deploy</a> •
-  <a href="#-license">License</a>
+  <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=11130f" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/FastAPI-Python-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Groq-Llama%203.3-FF6B35?style=flat-square&logo=lightning&logoColor=white" alt="Groq" />
+  <img src="https://img.shields.io/badge/Render-Deploy-46E3B7?style=flat-square&logo=render&logoColor=11130f" alt="Render" />
+</p>
+
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#experience-map">Experience Map</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#pipeline">Pipeline</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#deployment">Deployment</a> •
+  <a href="#api-snapshot">API Snapshot</a>
 </p>
 
 ---
 
-## ⚡ Overview
+## Overview
 
-**OncoDetect** is a full-stack AI-powered clinical triage application that assists in the early detection and risk assessment of cancer across **three organ systems** — Brain, Lung, and Breast. The system combines medical imaging analysis with patient clinical data and processes it through a sophisticated **6-stage neural pipeline** backed by **Llama 3.3 70B** via the Groq API.
+**OncoDetect** is a full-stack AI triage prototype for **brain**, **lung**, and **breast** screening workflows. It combines:
+
+- structured patient intake
+- simulated imaging model output
+- Groq-powered LLM clinical reasoning
+- self-audit verification
+- PDF-ready reporting
+
+The project is designed as a **professional demo workspace**, not a diagnostic system.
 
 > [!IMPORTANT]
-> This is a **demonstration/academic project**. It does not use real diagnostic ML models and should **never** be used for actual clinical decisions. The LLM reasoning simulates clinical analysis for educational purposes.
+> This repository is for **academic, portfolio, and demonstration use only**. It does **not** provide real medical diagnoses, and every output must be reviewed by a qualified clinician.
 
 ---
 
-## 🎯 Features
+## Why It Stands Out
 
-<table>
-<tr>
-<td width="50%">
-
-### 🧠 Intelligent Analysis
-- Multi-organ cancer detection (Brain, Lung, Breast)
-- 6-stage animated neural pipeline
-- Real-time processing with visual progress
-- Confidence band scoring with probability metrics
-
-</td>
-<td width="50%">
-
-### 🤖 LLM Clinical Reasoning
-- Powered by **Llama 3.3 70B** via Groq API
-- Dual-perspective reports (Doctor + Patient)
-- Self-auditing second LLM pass for quality
-- Differential diagnosis hints
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 📊 Rich Reporting
-- Dynamic triage badges (Low / Moderate / High)
-- Animated probability bars and confidence intervals
-- Downloadable PDF clinical reports
-- Audit trail with transparency flags
-
-</td>
-<td width="50%">
-
-### 🎨 Premium UI/UX
-- Dark-mode scientific aesthetic
-- Animated pipeline flowchart with data particles
-- Framer Motion page transitions
-- Fully responsive & accessible design
-
-</td>
-</tr>
-</table>
+| Area | What It Does |
+| :-- | :-- |
+| **Clinical Intake** | Captures demographics, symptoms, history, organ type, and scan upload |
+| **AI Simulation** | Produces organ-specific probability output and confidence bands |
+| **LLM Reasoning** | Generates both doctor-facing and patient-facing explanations |
+| **Self-Audit** | Runs a second-pass review over reasoning quality and reliability |
+| **Reporting** | Exports structured results into a downloadable PDF |
+| **Frontend UX** | Includes animated progress states, dashboard surfaces, and case workflows |
 
 ---
 
-## 🏗️ Architecture
+## Experience Map
 
+```mermaid
+flowchart LR
+    A["Landing / Overview"] --> B["Sign In"]
+    B --> C["Dashboard"]
+    C --> D["New Analysis"]
+    D --> E["Analysis Pipeline"]
+    E --> F["Clinical Report"]
+    F --> G["PDF Export"]
+
+    C --> H["Sample Case Loader"]
+    H --> D
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          ONCODETECT SYSTEM                         │
-├────────────────────────────┬────────────────────────────────────────┤
-│       FRONTEND (React)     │          BACKEND (FastAPI)             │
-│                            │                                        │
-│  ┌──────────────────────┐  │  ┌──────────────────────────────────┐  │
-│  │   Entrance Page      │  │  │   /api/analyze                   │  │
-│  │   ├─ Neural Logo     │  │  │   ├─ Patient Data Parser         │  │
-│  │   └─ Init Sequence   │  │  │   ├─ Vision Model (mock)         │  │
-│  ├──────────────────────┤  │  │   ├─ Clinical Reasoner (LLM)     │  │
-│  │   Sign In            │  │  │   └─ Self Auditor (LLM)          │  │
-│  │   └─ Demo Auth       │  │  ├──────────────────────────────────┤  │
-│  ├──────────────────────┤  │  │   /api/report                    │  │
-│  │   Dashboard          │  │  │   └─ PDF Generator (ReportLab)   │  │
-│  │   ├─ System Graph    │  │  ├──────────────────────────────────┤  │
-│  │   ├─ Stats Cards     │  │  │   Reasoning Engine               │  │
-│  │   └─ Capabilities    │  │  │   ├─ prompt_builder.py           │  │
-│  ├──────────────────────┤  │  │   ├─ clinical_reasoner.py        │  │
-│  │   New Analysis       │  │  │   └─ self_auditor.py             │  │
-│  │   ├─ Patient Form    │  │  └──────────────────────────────────┘  │
-│  │   ├─ Organ Selector  │  │                                        │
-│  │   └─ Scan Upload     │  │         External Services              │
-│  ├──────────────────────┤  │  ┌──────────────────────────────────┐  │
-│  │   Analysis Pipeline  │  │  │   Groq API                       │  │
-│  │   └─ 6-Stage Flow    │  │  │   └─ llama-3.3-70b-versatile    │  │
-│  ├──────────────────────┤  │  └──────────────────────────────────┘  │
-│  │   Report View        │  │                                        │
-│  │   ├─ Triage Badge    │  │                                        │
-│  │   ├─ Probability Bar │  │                                        │
-│  │   └─ PDF Download    │  │                                        │
-│  └──────────────────────┘  │                                        │
-└────────────────────────────┴────────────────────────────────────────┘
+
+### Core Screens
+
+| Screen | Purpose |
+| :-- | :-- |
+| **Entrance** | Product introduction and visual system entry point |
+| **Sign In** | Demo authentication gateway |
+| **Dashboard** | Workspace overview, metrics, and actions |
+| **New Analysis** | Patient intake and scan upload |
+| **Analysis** | Live multi-stage processing flow |
+| **Report** | Final triage output with explanation, audit, and export |
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph FE["Frontend (React + Vite)"]
+        FE1["Entrance"]
+        FE2["Sign In"]
+        FE3["Dashboard"]
+        FE4["New Analysis"]
+        FE5["Analysis"]
+        FE6["Report"]
+    end
+
+    subgraph API["Backend (FastAPI)"]
+        API1["POST /api/analyze"]
+        API2["POST /api/report/generate"]
+    end
+
+    subgraph CORE["Reasoning Core"]
+        C1["Mock Vision Output"]
+        C2["Clinical Prompt Builder"]
+        C3["Groq LLM Reasoner"]
+        C4["Self Auditor"]
+        C5["Structured Response Models"]
+    end
+
+    subgraph EXT["External / Output"]
+        E1["Groq API"]
+        E2["ReportLab PDF"]
+    end
+
+    FE4 --> API1
+    FE5 --> API1
+    FE6 --> API2
+
+    API1 --> C1
+    API1 --> C2
+    C2 --> C3
+    C3 --> C4
+    C4 --> C5
+    C3 --> E1
+    API2 --> E2
 ```
 
 ---
 
-## 🔬 Pipeline Flow
+## Pipeline
 
-The analysis runs through a **6-stage neural pipeline**, each stage animated in real-time on the frontend:
+### 6-Stage Triage Flow
 
-```
-┌──────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│          │    │              │    │              │    │              │    │              │    │              │
-│  INPUT   │───▶│ PREPROCESSING│───▶│ VISION MODEL │───▶│  CLINICAL    │───▶│     LLM      │───▶│   FINAL      │
-│  STAGE   │    │              │    │              │    │   LOGIC      │    │  REASONING   │    │   REPORT     │
-│          │    │              │    │              │    │              │    │              │    │              │
-└──────────┘    └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
-     │                 │                   │                   │                   │                   │
-  Patient         Normalization       DenseNet121         Risk Scoring      Llama 3.3 70B       Triage Report
-  Data +          & Enhancement       ResNet50            Confidence        Dual-Perspective     PDF Generation
-  Scan Image                          EfficientNet-B4     Band Calc         Self-Audit           Download Ready
+```mermaid
+flowchart LR
+    S1["01 Input Ingestion"] --> S2["02 Preprocessing"]
+    S2 --> S3["03 Vision Signal"]
+    S3 --> S4["04 Clinical Logic"]
+    S4 --> S5["05 LLM Reasoning"]
+    S5 --> S6["06 Final Report"]
 ```
 
-### Stage Details
+### What Happens at Each Stage
 
-| Stage | Name | Description | Technology |
-|:-----:|:-----|:------------|:-----------|
-| `01` | **Input Ingestion** | Patient demographics, symptoms, and scan image are collected | React Form + Drag-n-Drop |
-| `02` | **Preprocessing** | Image normalization, DICOM parsing, and metadata extraction | Python / NumPy |
-| `03` | **Vision Model** | Organ-specific CNN generates probability scores | DenseNet-121 / ResNet-50 / EfficientNet-B4 |
-| `04` | **Clinical Logic** | Risk scoring with confidence bands and triage classification | Custom Scoring Engine |
-| `05` | **LLM Reasoning** | Full clinical report with doctor and patient explanations | Groq API + Llama 3.3 70B |
-| `06` | **Final Report** | Compiled triage report with audit trail and PDF export | ReportLab + React |
+| Stage | Responsibility | Output |
+| :-- | :-- | :-- |
+| **01 Input Ingestion** | Reads patient demographics, symptoms, and scan file | structured case packet |
+| **02 Preprocessing** | Normalizes and validates input for downstream analysis | normalized analysis context |
+| **03 Vision Signal** | Produces organ-specific probability and confidence band | simulated model score |
+| **04 Clinical Logic** | Applies triage thresholds and risk labeling | low / moderate / high triage |
+| **05 LLM Reasoning** | Creates clinical narrative and patient summary | doctor + patient explanations |
+| **06 Final Report** | Packages reasoning, audit, and recommendations | report-ready JSON + PDF export |
+
+### Sequence View
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Frontend
+    participant BE as FastAPI
+    participant VR as Vision Layer
+    participant GR as Groq LLM
+    participant AU as Self Auditor
+    participant PDF as Report Builder
+
+    U->>FE: Submit patient case
+    FE->>BE: POST /api/analyze
+    BE->>VR: Generate probability signal
+    VR-->>BE: Score + confidence band
+    BE->>GR: Request clinical reasoning
+    GR-->>BE: Doctor + patient explanation
+    BE->>AU: Audit reasoning output
+    AU-->>BE: Flags + confidence check
+    BE-->>FE: Final structured response
+    U->>FE: Export report
+    FE->>PDF: POST /api/report/generate
+    PDF-->>U: Download PDF
+```
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 
-| Technology | Purpose | Version |
-|:-----------|:--------|:--------|
-| **React** | UI library | 19.x |
-| **Vite** | Build tool & dev server | 8.x |
-| **Tailwind CSS** | Utility-first styling | 4.x |
-| **Framer Motion** | Animations & transitions | Latest |
-| **Chart.js** | Data visualization | Latest |
-| **Lucide React** | Icon system | Latest |
-| **Axios** | HTTP client | 1.x |
-| **React Router** | Client-side routing | 7.x |
+- **React 19**
+- **Vite 8**
+- **Tailwind CSS 4**
+- **Framer Motion**
+- **Axios**
+- **Lucide React**
 
 ### Backend
 
-| Technology | Purpose | Version |
-|:-----------|:--------|:--------|
-| **FastAPI** | API framework | Latest |
-| **Uvicorn** | ASGI server | Latest |
-| **Groq SDK** | LLM API client | Latest |
-| **ReportLab** | PDF generation | 4.1.0 |
-| **Pydantic** | Data validation | Latest |
-| **python-dotenv** | Environment config | Latest |
+- **FastAPI**
+- **Uvicorn**
+- **Pydantic**
+- **Groq SDK**
+- **python-dotenv**
+- **ReportLab**
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-```
+```text
 oncodetect/
 ├── backend/
-│   ├── main.py                    # FastAPI app entry point
-│   ├── requirements.txt           # Python dependencies
-│   ├── .env                       # Environment variables (GROQ_API_KEY)
+│   ├── main.py
+│   ├── requirements.txt
 │   ├── models/
-│   │   └── schemas.py             # Pydantic request/response models
 │   ├── reasoning/
-│   │   ├── prompt_builder.py      # LLM prompt construction
-│   │   ├── clinical_reasoner.py   # Primary LLM clinical report
-│   │   └── self_auditor.py        # Secondary LLM audit pass
 │   └── routers/
-│       ├── analyze.py             # /api/analyze endpoint
-│       └── report.py              # /api/report PDF endpoint
-│
 ├── frontend/
-│   ├── package.json               # Node dependencies
-│   ├── vite.config.js             # Vite configuration
-│   ├── index.html                 # HTML entry
+│   ├── package.json
+│   ├── vite.config.js
 │   └── src/
-│       ├── App.jsx                # Router & layout
-│       ├── index.css              # Global design system
-│       ├── main.jsx               # React entry
 │       ├── components/
-│       │   ├── Navbar.jsx         # Navigation bar
-│       │   ├── CaseLibrary.jsx    # Sample case selector
-│       │   ├── Toast.jsx          # Notification toasts
-│       │   ├── LoadingSkeleton.jsx # Loading placeholders
-│       │   ├── ErrorBoundary.jsx  # Crash handler
-│       │   └── DisclaimerBanner.jsx
 │       ├── context/
-│       │   └── PatientContext.jsx  # Global state
 │       ├── hooks/
-│       │   └── usePageTransition.js
 │       └── pages/
-│           ├── Entrance.jsx       # Landing / initialization
-│           ├── SignIn.jsx         # Authentication (demo)
-│           ├── Dashboard.jsx      # System overview
-│           ├── NewAnalysis.jsx    # Patient intake form
-│           ├── Analysis.jsx       # Pipeline visualization
-│           ├── Report.jsx         # Clinical report view
-│           └── NotFound.jsx       # 404 page
-│
-├── .gitignore
-├── render.yaml                    # Render deployment config
-└── README.md                      # This file
+├── render.yaml
+└── README.md
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Prerequisites
-
-- **Node.js** ≥ 18.x
-- **Python** ≥ 3.10
-- **Groq API Key** → [Get one free at console.groq.com](https://console.groq.com)
-
-### 1. Clone the Repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/vishva2410/ONCO-DETECT-.git
 cd ONCO-DETECT-
 ```
 
-### 2. Backend Setup
+### 2. Backend
 
 ```bash
 cd backend
-
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate        # macOS/Linux
-# venv\Scripts\activate         # Windows
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
-
-# Configure environment
-echo "GROQ_API_KEY=your_groq_api_key_here" > .env
-
-# Start the server
+echo "GROQ_API_KEY=your_key_here" > .env
 uvicorn main:app --reload --port 8000
 ```
 
-### 3. Frontend Setup
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 3. Frontend
 
 ```bash
 cd frontend
-
-# Install dependencies
-npm install --legacy-peer-deps
-
-# Start dev server
+npm install
 npm run dev
 ```
 
-### 4. Open the Application
+### 4. Open the App
 
-Navigate to **http://localhost:5173** in your browser.
-
----
-
-## 🌐 Deployment
-
-### Deploy on Render (Recommended)
-
-This project is configured for **[Render](https://render.com)** with a `render.yaml` blueprint.
-
-#### Option A: One-Click Deploy
-
-1. Push this repo to GitHub
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. Click **"New"** → **"Blueprint"**
-4. Connect your GitHub repo
-5. Render will auto-detect `render.yaml` and deploy both services
-
-#### Option B: Manual Deploy
-
-**Backend (Web Service):**
-
-| Setting | Value |
-|:--------|:------|
-| **Environment** | Python 3 |
-| **Build Command** | `pip install -r requirements.txt` |
-| **Start Command** | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
-| **Root Directory** | `backend` |
-| **Env Variable** | `GROQ_API_KEY` = your key |
-
-**Frontend (Static Site):**
-
-| Setting | Value |
-|:--------|:------|
-| **Build Command** | `npm install --legacy-peer-deps && npm run build` |
-| **Publish Directory** | `dist` |
-| **Root Directory** | `frontend` |
-| **Env Variable** | `VITE_API_URL` = your backend URL |
+```text
+Frontend: http://localhost:5173
+Backend:  http://localhost:8000
+```
 
 ---
 
-## 🔐 Environment Variables
+## Deployment
 
-| Variable | Required | Description |
-|:---------|:--------:|:------------|
-| `GROQ_API_KEY` | ✅ | API key for Groq LLM service |
-| `VITE_API_URL` | ⬜ | Backend API URL (defaults to `http://localhost:8000`) |
-| `PORT` | ⬜ | Server port (auto-set by Render) |
+This repo includes a **Render blueprint** via `render.yaml`.
+
+### Deployment Topology
+
+```mermaid
+flowchart LR
+    GH["GitHub Repo"] --> RD["Render Blueprint"]
+    RD --> FE["Static Site: frontend/dist"]
+    RD --> BE["Web Service: FastAPI backend"]
+    BE --> GR["Groq API"]
+    FE --> BE
+```
+
+### Render Setup
+
+| Service | Root | Build Command | Start / Publish |
+| :-- | :-- | :-- | :-- |
+| **Backend** | `backend` | `pip install -r requirements.txt` | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
+| **Frontend** | `frontend` | `npm ci && npm run build` | `dist` |
+
+### Required Environment Variables
+
+| Variable | Required | Purpose |
+| :-- | :--: | :-- |
+| `GROQ_API_KEY` | Yes | Enables LLM reasoning through Groq |
+| `FRONTEND_URL` | Recommended | Allows production CORS on backend |
+| `VITE_API_URL` | Yes in deploy | Points frontend to deployed backend |
 
 ---
 
-## 📸 Pages Overview
-
-| Page | Description |
-|:-----|:------------|
-| **🚀 Entrance** | Cinematic initialization sequence with neural logo animation |
-| **🔐 Sign In** | Secure gateway with demo credentials support |
-| **📊 Dashboard** | System architecture graph, stats cards, and capability overview |
-| **📋 New Analysis** | Patient intake form with organ selector and drag-drop upload |
-| **⚡ Analysis** | Real-time 6-stage pipeline flowchart with animated progress |
-| **📄 Report** | Full clinical report with triage badge, probability bars, and PDF export |
-
----
-
-## 🔄 API Reference
+## API Snapshot
 
 ### `POST /api/analyze`
 
-Processes a patient case through the full analysis pipeline.
+Accepts:
 
-**Request:** `multipart/form-data`
+- `patient_data` as JSON string
+- `scan_file` as multipart file upload
 
-| Field | Type | Description |
-|:------|:-----|:------------|
-| `patient_data` | `string (JSON)` | Patient demographics and symptoms |
-| `scan_file` | `file` | Medical scan image (JPEG/PNG/DICOM) |
-
-**Response:**
+Returns:
 
 ```json
 {
@@ -374,46 +323,52 @@ Processes a patient case through the full analysis pipeline.
   "probabilityScore": 0.74,
   "confidenceBand": [0.68, 0.81],
   "triageLevel": "high",
-  "reasoningTrace": "Step-by-step clinical reasoning...",
-  "riskSummary": "Elevated risk indicators detected...",
-  "doctorExplanation": "Clinical narrative for physicians...",
-  "patientExplanation": "Simplified explanation for patients...",
-  "triageRecommendation": "Referral recommendations...",
-  "differentialHints": ["Adenocarcinoma", "Squamous Cell"],
-  "confidenceNote": "Model confidence assessment...",
+  "reasoningTrace": "Structured clinical reasoning...",
+  "riskSummary": "Overall triage summary...",
+  "doctorExplanation": "Clinician-facing explanation...",
+  "patientExplanation": "Patient-friendly explanation...",
+  "triageRecommendation": "Suggested next step...",
+  "differentialHints": ["Alternative possibility A", "Alternative possibility B"],
+  "confidenceNote": "Reliability note...",
   "auditPassed": true,
   "auditFlags": [],
   "modelSource": "densenet121"
 }
 ```
 
-### `GET /api/report/pdf`
+### `POST /api/report/generate`
 
-Generates and downloads a PDF clinical report.
+Accepts the structured report payload and returns:
 
----
-
-## 🧪 Development
-
-```bash
-# Run frontend in dev mode
-cd frontend && npm run dev
-
-# Run backend with hot reload
-cd backend && uvicorn main:app --reload
-
-# Build frontend for production
-cd frontend && npm run build
-```
+- `application/pdf`
 
 ---
 
-## 📝 License
+## Highlights for Reviewers
 
-This project is built for **academic and demonstration purposes**. 
+If you are scanning this repo quickly, these are the most important pieces:
+
+- **Frontend workflow:** intake -> analysis -> report
+- **LLM integration:** Groq-backed reasoning with structured JSON output
+- **Safety layer:** self-auditor reviews report quality before final output
+- **Deployment readiness:** Render blueprint for frontend + backend
+
+---
+
+## Notes
+
+- The imaging layer is currently **simulated**, not a real diagnostic CNN pipeline.
+- The value of the project is in the **workflow design**, **LLM orchestration**, **structured reporting**, and **full-stack presentation**.
+- The app is intentionally built to look and behave like a polished triage product demo.
+
+---
+
+## License
+
+This project is for **educational, demonstration, and portfolio use**.
 
 ---
 
 <p align="center">
-  <sub>Built with 🧬 by <b>Vishva</b> • Powered by Groq + Llama 3.3 70B</sub>
+  <sub>Built by Vishva • OncoDetect • FastAPI + React + Groq</sub>
 </p>
