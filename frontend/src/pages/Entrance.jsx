@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Activity, Lock } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Shield } from 'lucide-react';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 
 export default function Entrance() {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ export default function Entrance() {
       <div className="z-10 flex flex-col items-center justify-center text-center px-6 max-w-4xl mx-auto w-full">
         
         {/* Stage 0/1: Logo Core */}
-        <motion.div 
+        <Motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
@@ -56,19 +56,19 @@ export default function Entrance() {
           <div className="w-24 h-24 border border-[rgba(0,212,168,0.3)] relative flex items-center justify-center group">
              <Shield size={40} className="text-[#00D4A8] relative z-20" />
              {/* Animated corners */}
-             <motion.div 
+             <Motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 border border-dashed border-[rgba(0,212,168,0.2)]" 
              />
              <div className="absolute inset-0 bg-[#00D4A8]/10 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
           </div>
-        </motion.div>
+        </Motion.div>
 
         {/* Stage 1: Brand Header */}
         <AnimatePresence>
           {initStage >= 1 && (
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
@@ -81,14 +81,14 @@ export default function Entrance() {
                 ADVANCED MULTI-ORGAN TRIAGE <br className="hidden md:block"/>
                 <span className="text-[#444] mt-4 block">CLINICAL REASONING AGENT 001</span>
               </p>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
 
         {/* Stage 2: Action Button */}
         <AnimatePresence>
           {initStage >= 2 && (
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -105,7 +105,7 @@ export default function Entrance() {
                 {/* Button slide effect */}
                 <div className="absolute inset-0 w-0 bg-[#00D4A8] group-hover:w-full transition-all duration-700 ease-[cubic-bezier(0.19, 1, 0.22, 1)]" />
               </button>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -113,14 +113,14 @@ export default function Entrance() {
       {/* Initialize Logs (Bottom Right) */}
       <div className="absolute bottom-10 right-10 text-left font-mono text-[9px] tracking-[0.2em] text-[#444] hidden md:block uppercase space-y-2">
         {logs.map((log, i) => (
-          <motion.div 
+          <Motion.div 
             key={i}
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
             <span className="text-[#00D4A8] opacity-50">{">>"}</span> {log}
-          </motion.div>
+          </Motion.div>
         ))}
       </div>
 

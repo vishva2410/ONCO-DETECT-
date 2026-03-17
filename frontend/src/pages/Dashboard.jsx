@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Activity, Brain, Wind, Heart, Shield, Zap, BarChart3, Radio, ChevronRight, Circle, Terminal } from 'lucide-react';
+import { Activity, Circle, Terminal, Zap } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import CaseLibrary from '../components/CaseLibrary';
 import Navbar from '../components/Navbar';
@@ -25,15 +25,6 @@ const edges = [
   ['llm', 'output'], ['audit', 'output'],
 ];
 
-/* ─── Fake processing history ──────────────────────────────── */
-const processingHistory = [
-  { day: 'Mon', scans: 12 }, { day: 'Tue', scans: 28 },
-  { day: 'Wed', scans: 18 }, { day: 'Thu', scans: 35 },
-  { day: 'Fri', scans: 22 }, { day: 'Sat', scans: 8 },
-  { day: 'Sun', scans: 14 },
-];
-const maxScans = Math.max(...processingHistory.map(d => d.scans));
-
 /* ─── System logs ──────────────────────────────────────────── */
 const systemLogs = [
   { time: '10:44:02', msg: 'System initialized — 3 organ modules loaded', type: 'info' },
@@ -48,20 +39,8 @@ const systemLogs = [
 export default function Dashboard() {
   const navigate = useNavigate();
   const [caseLibOpen, setCaseLibOpen] = useState(false);
-  const [activeNode, setActiveNode] = useState(null);
-  const [pulseIdx, setPulseIdx] = useState(0);
   const [confidenceAnim, setConfidenceAnim] = useState(0);
-  const [barsAnim, setBarsAnim] = useState(false);
-  const canvasRef = useRef(null);
   const isVisible = usePageTransition(10);
-
-  // Cycle active node pulse for node graph
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPulseIdx(prev => (prev + 1) % nodes.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Animate confidence score
   useEffect(() => {
@@ -76,19 +55,8 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Trigger bar animation
-  useEffect(() => {
-    setTimeout(() => setBarsAnim(true), 300);
-  }, []);
-
   // Get node position helper
   const getNode = (id) => nodes.find(n => n.id === id);
-
-  // Radial chart helpers
-  const radius = 54;
-  const circumference = 2 * Math.PI * radius;
-  const progress = confidenceAnim / 100;
-  const dashOffset = circumference * (1 - progress);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#050505]">
@@ -119,8 +87,8 @@ export default function Dashboard() {
             { label: "Daily Throughput", value: "137 Scans", sub: "+12% vs week", color: "#0090FF" },
             { label: "Reasoning Depth", value: "llama-3.3", sub: "Groq LPU Array", color: "#A855F7" },
             { label: "Confidence Floor", value: "94.2%", sub: "Audit Threshold", color: "#FFBC42" }
-          ].map((stat, i) => (
-            <div key={i} className="glass-card p-6 border-t font-semibold" style={{ borderTop: `2px solid ${stat.color}44` }}>
+          ].map((stat) => (
+            <div key={stat.label} className="glass-card p-6 border-t font-semibold" style={{ borderTop: `2px solid ${stat.color}44` }}>
               <p className="text-[9px] text-[#7A8DA8] tracking-[0.2em] uppercase mb-4">{stat.label}</p>
               <p className="text-2xl font-bold text-[#FAFAFA] mb-1">{stat.value}</p>
               <p className="text-[10px] text-[#444] tracking-wider uppercase">{stat.sub}</p>
@@ -173,7 +141,7 @@ export default function Dashboard() {
                  })}
 
                  {/* Nodes */}
-                 {nodes.map((node, i) => {
+                 {nodes.map((node) => {
                    const colors = {
                     input: '#7A8DA8', organ: '#0090FF', process: '#00D4A8',
                     llm: '#A855F7', audit: '#FFBC42', output: '#00D4A8'

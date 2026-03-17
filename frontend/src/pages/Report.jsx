@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePatient } from '../context/PatientContext';
+import { usePatient } from '../context/usePatient';
 import Navbar from '../components/Navbar';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import {

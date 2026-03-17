@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePatient } from '../context/PatientContext';
+import { usePatient } from '../context/usePatient';
 import api from '../lib/api';
-import { Check, Loader2, AlertCircle, RotateCcw, XCircle, Database, Cpu, Activity, Brain, FileText, Zap } from 'lucide-react';
+import { AlertCircle, RotateCcw, XCircle, Database, Cpu, Activity, Brain, FileText, Zap } from 'lucide-react';
 import { usePageTransition } from '../hooks/usePageTransition';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 
 const pipelineSteps = [
   { id: 'input', label: 'Patient Data', icon: Database, color: '#0090FF' },
@@ -26,8 +26,8 @@ export default function Analysis() {
   const { patientData, scanFile, setReportData, addToast, resetPatient } = usePatient();
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState(null);
-  const [isTimeout, setIsTimeout] = useState(false);
   const [stepsComplete, setStepsComplete] = useState(false);
+  const [runId, setRunId] = useState(0);
   const hasRun = useRef(false);
   const isVisible = usePageTransition(10);
 
@@ -81,7 +81,6 @@ export default function Analysis() {
       } catch (err) {
         console.error('Analysis error:', err);
         if (err.code === 'ECONNABORTED') {
-          setIsTimeout(true);
           setError('Analysis is taking longer than expected. The server connection timed out.');
         } else {
           setError('Server Error: ' + (err.response?.data?.detail || err.message));
@@ -91,14 +90,14 @@ export default function Analysis() {
     };
 
     runSteps();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [addToast, navigate, patientData, runId, scanFile, setReportData]);
 
   const handleRetry = () => {
     setError(null);
-    setIsTimeout(false);
     setCurrentStep(0);
     setStepsComplete(false);
     hasRun.current = false;
+    setRunId((prev) => prev + 1);
   };
 
   const handleStartOver = () => {
@@ -134,7 +133,7 @@ export default function Analysis() {
 
       <div className="relative z-10 w-full max-w-5xl">
         {/* Header Info */}
-        <motion.div 
+        <Motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
@@ -149,23 +148,22 @@ export default function Analysis() {
           <p className="text-sm text-[#7A8DA8] tracking-[0.1em] uppercase">
             {patientData.age}y · {patientData.gender} · {timestamp}
           </p>
-        </motion.div>
+        </Motion.div>
 
         {/* Pipeline Flowchart */}
         <div className="relative flex items-center justify-between gap-4 py-20 px-4 mb-12">
           {/* Connecting Lines Layer */}
           <div className="absolute top-1/2 left-0 w-full h-px bg-[rgba(255,255,255,0.05)] -translate-y-1/2 z-0" />
           
-          {pipelineSteps.map((step, idx) => {
-            const isComplete = idx < currentStep || (stepsComplete && idx === pipelineSteps.length - 1);
-            const isActive = idx === currentStep && !stepsComplete;
-            const isPending = idx > currentStep && !stepsComplete;
-            const Icon = step.icon;
+            {pipelineSteps.map((step, idx) => {
+              const isComplete = idx < currentStep || (stepsComplete && idx === pipelineSteps.length - 1);
+              const isActive = idx === currentStep && !stepsComplete;
+              const Icon = step.icon;
 
             return (
               <div key={step.id} className="relative z-10 flex flex-col items-center group">
                 {/* Node */}
-                <motion.div
+                <Motion.div
                   initial={false}
                   animate={{
                     borderColor: isComplete || isActive ? '#00D4A8' : 'rgba(255,255,255,0.1)',
@@ -185,18 +183,18 @@ export default function Analysis() {
                   
                   {/* Status Ring */}
                   {isActive && (
-                    <motion.div 
+                    <Motion.div 
                       layoutId="activeRing"
                       className="absolute inset-0 border-2 border-[#00D4A8] opacity-50"
                       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
                   )}
-                </motion.div>
+                </Motion.div>
 
                 {/* Data Particles (Flow Effect) */}
                 {isActive && idx < pipelineSteps.length - 1 && (
-                  <motion.div 
+                  <Motion.div 
                     initial={{ left: '100%', opacity: 0 }}
                     animate={{ left: '200%', opacity: [0, 1, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -224,7 +222,7 @@ export default function Analysis() {
         <div className="mt-24 text-center">
           <AnimatePresence mode="wait">
             {!error ? (
-              <motion.div
+              <Motion.div
                 key="status-text"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -250,9 +248,9 @@ export default function Analysis() {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </Motion.div>
             ) : (
-              <motion.div
+              <Motion.div
                 key="error-zone"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -278,7 +276,7 @@ export default function Analysis() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>
         </div>

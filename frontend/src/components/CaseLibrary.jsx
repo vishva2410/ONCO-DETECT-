@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { usePatient } from '../context/PatientContext';
+import { usePatient } from '../context/usePatient';
 import { X, Brain, Wind, Heart, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
 
 const sampleCases = [
   {
@@ -83,16 +82,16 @@ export default function CaseLibrary({ isOpen, onClose }) {
     onClose();
     
     try {
-      const response = await fetch("/sample_scan.jpg");
+      const response = await fetch('/sample_scan.jpg');
       const blob = await response.blob();
-      const file = new File([blob], "sample_scan.jpg", {type:"image/jpeg"});
+      const file = new File([blob], 'sample_scan.jpg', { type: 'image/jpeg' });
       setScanFile(file);
-      setScanPreviewUrl("/sample_scan.jpg");
-    } catch(e) {
-      console.error("Failed to load sample scan image", e);
+      setScanPreviewUrl('/sample_scan.jpg');
+    } catch (e) {
+      console.error('Failed to load sample scan image', e);
     }
 
-    addToast("Sample case loaded", "success");
+    addToast('Sample case loaded', 'success');
     navigate('/new-analysis');
   };
 

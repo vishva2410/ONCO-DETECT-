@@ -1,27 +1,13 @@
-import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useState, useCallback, useMemo } from 'react';
 import { useToast } from '../hooks/useToast';
+import { initialPatientState } from './patientState';
 
 const PatientContext = createContext();
-
-const initialState = {
-  patientData: {
-    name: '',
-    age: '',
-    gender: '',
-    symptoms: '',
-    smokingHistory: false,
-    familyHistory: false,
-    organType: '',
-  },
-  scanFile: null,
-  scanPreviewUrl: null,
-  reportData: null,
-};
 
 export function PatientProvider({ children }) {
   const { toasts, addToast, removeToast } = useToast();
   
-  const [patientData, setPatientData] = useState(initialState.patientData);
+  const [patientData, setPatientData] = useState(initialPatientState.patientData);
   const [scanFile, setScanFile] = useState(null);
   const [scanPreviewUrl, setScanPreviewUrl] = useState(null);
   const [reportData, setReportData] = useState(null);
@@ -31,10 +17,10 @@ export function PatientProvider({ children }) {
   }, []);
 
   const resetPatient = useCallback(() => {
-    setPatientData(initialState.patientData);
-    setScanFile(null);
-    setScanPreviewUrl(null);
-    setReportData(null);
+    setPatientData(initialPatientState.patientData);
+    setScanFile(initialPatientState.scanFile);
+    setScanPreviewUrl(initialPatientState.scanPreviewUrl);
+    setReportData(initialPatientState.reportData);
   }, []);
 
   const value = useMemo(() => ({
@@ -63,11 +49,4 @@ export function PatientProvider({ children }) {
     </PatientContext.Provider>
   );
 }
-
-export function usePatient() {
-  const context = useContext(PatientContext);
-  if (!context) {
-    throw new Error('usePatient must be used within a PatientProvider');
-  }
-  return context;
-}
+export { PatientContext };

@@ -1,6 +1,6 @@
 import { useEffect, useState, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { usePatient } from './context/PatientContext';
+import { usePatient } from './context/usePatient';
 import ErrorBoundary from './components/ErrorBoundary';
 import Toast from './components/Toast';
 import { SkeletonReport } from './components/LoadingSkeleton';

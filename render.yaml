@@ -6,6 +6,7 @@ services:
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
     envVars:
       - key: GROQ_API_KEY
         sync: false
@@ -19,9 +20,11 @@ services:
   - type: static_site
     name: oncodetect
     rootDir: frontend
-    buildCommand: npm install --legacy-peer-deps && npm run build
+    buildCommand: npm ci && npm run build
     publishPath: dist
     envVars:
+      - key: NODE_VERSION
+        value: "20.19.0"
       - key: VITE_API_URL
         value: https://oncodetect-api.onrender.com
     routes:
