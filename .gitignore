@@ -1,29 +1,39 @@
-# Dependencies
-node_modules/
+# ─── Python ──────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
 
-# Environment
+# ─── Node ────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ─── Build Output ────────────────────────────────────
+oncodetect/frontend/dist/
+oncodetect/frontend/build/
+frontend/dist/
+
+# ─── Environment & Secrets ───────────────────────────
 .env
 .env.local
 .env.production
+*.env
 
-# Build
-frontend/dist/
-*.egg-info/
-
-# IDE
+# ─── OS / Editor ─────────────────────────────────────
+.DS_Store
+Thumbs.db
 .vscode/
 .idea/
 *.swp
 *.swo
-.DS_Store
 
-# Logs
+# ─── Logs ────────────────────────────────────────────
 *.log
-npm-debug.log*
 
-# OS
-Thumbs.db
+# ─── Reference / Design ──────────────────────────────
+# Stitch reference project & HTML design templates — local only
 onco-dashboard-ref/
+final ui/

@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap');
+@import "tailwindcss";
+
+/* ============================================
+   ONCODETECT DESIGN SYSTEM — v2.0
+   Dark #050505 + Cyan #00D4A8 theme
+   ============================================ */
+@theme {
+  /* === Core Brand Colors === */
+  --color-primary: #00D4A8;
+  --color-primary-dim: #00a882;
+  --color-primary-container: rgba(0, 212, 168, 0.12);
+  --color-on-primary: #050505;
+  --color-on-primary-container: #00D4A8;
+
+  --color-accent-blue: #0090FF;
+  --color-accent-purple: #A855F7;
+  --color-accent-amber: #FFBC42;
+  --color-error: #FF4444;
+  --color-error-container: rgba(255, 68, 68, 0.12);
+  --color-on-error-container: #FF4444;
+
+  /* === Status Colors === */
+  --color-secondary-container: #00C853;
+  --color-on-secondary-container: #00C853;
+  --color-tertiary-container: #FFBC42;
+  --color-on-tertiary-container: #FFBC42;
+
+  /* === Surface Hierarchy (dark monochrome) === */
+  --color-background: #050505;
+  --color-on-background: #FAFAFA;
+  --color-surface: #050505;
+  --color-surface-dim: #060606;
+  --color-surface-container-lowest: #0a0a0a;
+  --color-surface-container-low: #111111;
+  --color-surface-container: #161616;
+  --color-surface-container-high: #1e1e1e;
+  --color-surface-container-highest: #252525;
+  --color-surface-bright: #2a2a2a;
+  --color-surface-variant: #1a1a1a;
+  --color-on-surface: #FAFAFA;
+  --color-on-surface-variant: #7A8DA8;
+  --color-inverse-surface: #FAFAFA;
+  --color-inverse-on-surface: #050505;
+
+  /* === Outline / Borders === */
+  --color-outline: rgba(255, 255, 255, 0.08);
+  --color-outline-variant: rgba(255, 255, 255, 0.04);
+
+  /* === Typography === */
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #050505;
+  color: #FAFAFA;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-panel {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Scanlines overlay effect */
+.scanline {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 212, 168, 0.03) 2px,
+    rgba(0, 212, 168, 0.03) 4px
+  );
+  pointer-events: none;
+}
+
+/* Radar sweep gradient */
+.scan-radar {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(0, 212, 168, 0.15) 30%,
+    transparent 50%
+  );
+}
+
+/* Grid overlay */
+.bg-grid {
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glow utilities */
+.glow-cyan { box-shadow: 0 0 20px rgba(0, 212, 168, 0.3); }
+.glow-blue { box-shadow: 0 0 20px rgba(0, 144, 255, 0.3); }
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #00D4A8, #0090FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================
+   MATERIAL SYMBOLS RESET
+   ============================================ */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0, 212, 168, 0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 212, 168, 0.6); }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10px, -20px); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-10px, 15px); }
+}
+@keyframes toast-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes progress-fill {
+  from { width: 0%; }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.animate-float1 { animation: float1 8s ease-in-out infinite; }
+.animate-float2 { animation: float2 10s ease-in-out infinite; }
+.toast-animate { animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-fade-in-up { animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-in-left { animation: slide-in-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
