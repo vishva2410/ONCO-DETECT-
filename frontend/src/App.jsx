@@ -11,8 +11,10 @@ import Dashboard from './pages/Dashboard';
 import NewAnalysis from './pages/NewAnalysis';
 import Analysis from './pages/Analysis';
 import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const Report = lazy(() => import('./pages/Report'));
+const History = lazy(() => import('./pages/History'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -65,10 +67,14 @@ export default function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Entrance />} />
           <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/new-analysis" element={<NewAnalysis />} />
-          <Route path="/analysis" element={<Analysis />} />
-          <Route path="/report" element={<Report />} />
+          
+          {/* Protected Clinical Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/new-analysis" element={<ProtectedRoute><NewAnalysis /></ProtectedRoute>} />
+          <Route path="/analysis" element={<ProtectedRoute><Analysis /></ProtectedRoute>} />
+          <Route path="/report/:id" element={<ProtectedRoute><Report /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

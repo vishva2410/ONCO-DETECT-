@@ -21,9 +21,8 @@ def audit_clinical_report(
         if not k.startswith("_")
     }
 
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
     try:
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         message = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             max_tokens=512,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { usePatient } from '../context/usePatient';
 import Navbar from '../components/Navbar';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -24,20 +24,60 @@ const organLabels = {
 };
 
 export default function Report() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { patientData, reportData, resetPatient, addToast } = usePatient();
+  const { patientData, reportData, setReportData, setPatientData, resetPatient, addToast } = usePatient();
   const [view, setView] = useState('doctor'); // 'doctor' | 'patient'
   const [barWidth, setBarWidth] = useState(0);
   const [showRecs, setShowRecs] = useState(true);
   const [showReasoning, setShowReasoning] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [loadingDb, setLoadingDb] = useState(false);
   const isVisible = usePageTransition(10);
 
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    if (!reportData && !redirecting) {
+    let cancelled = false;
+
+    if (id && !reportData) {
+      const fetchReport = async () => {
+        setLoadingDb(true);
+        try {
+          const res = await api.get(`/api/reports/${id}`);
+          if (cancelled) return;
+          const hydratedReport = {
+            ...res.data,
+            reportId: res.data.reportId || res.data.id,
+            recommendations: res.data.recommendations || [],
+          };
+          setReportData(hydratedReport);
+          setPatientData({
+            name: res.data.patientName || '',
+            age: res.data.patientAge || '',
+            gender: res.data.patientGender || '',
+            organType: res.data.organType || '',
+          });
+        } catch (err) {
+          if (!cancelled) {
+            console.error(err);
+            addToast('Failed to load report from database', 'error');
+            navigate('/');
+          }
+        } finally {
+          if (!cancelled) {
+            setLoadingDb(false);
+          }
+        }
+      };
+      fetchReport();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    if (!reportData && !redirecting && !loadingDb && !id) {
       setRedirecting(true);
       const t = setTimeout(() => {
         addToast('Redirecting to home...', 'info');
@@ -56,13 +96,24 @@ export default function Report() {
       }, 1200);
       return () => { clearTimeout(t1); clearTimeout(t2); }
     }
-  }, [reportData, navigate, addToast, redirecting]);
+  }, [id, reportData, loadingDb, navigate, addToast, redirecting, setPatientData, setReportData]);
 
   useEffect(() => {
     if (view === 'doctor') {
       setShowReasoning(true);
     }
   }, [view]);
+
+  if (loadingDb || (id && !reportData)) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#050505]">
+        <Navbar />
+        <main className="flex-1 px-8 md:px-12 pt-32 pb-24 max-w-[1200px] mx-auto w-full">
+          <SkeletonReport />
+        </main>
+      </div>
+    );
+  }
 
   if (!reportData) {
     return (
@@ -102,7 +153,10 @@ export default function Report() {
       
       const payload = { 
         ...reportData, 
-        patientName: patientData.name,
+        patientName: patientData.name || reportData.patientName || 'Unknown Patient',
+        patientAge: patientData.age || reportData.patientAge || '',
+        patientGender: patientData.gender || reportData.patientGender || '',
+        recommendations: reportData.recommendations || reportData.differentialHints || [],
         heatmapBase64: reportData.heatmapBase64 ? reportData.heatmapBase64.trim().replace(/\s/g, "") : null
       };
       const response = await api.post('/api/report/generate', payload, {
@@ -112,7 +166,8 @@ export default function Report() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `OncoDetect_Report_${patientData.name.replace(/\s+/g, '_')}.pdf`);
+      const exportName = (patientData.name || reportData.patientName || 'Patient').replace(/\s+/g, '_');
+      link.setAttribute('download', `OncoDetect_Report_${exportName}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -139,6 +194,11 @@ Risk Summary: ${reportData.riskSummary || 'N/A'}
 Recommendation: ${reportData.triageRecommendation || 'N/A'}
 Generated: ${timestamp}
 ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: Decision support only. Not a clinical diagnosis.`;
+
+    if (!navigator.clipboard?.writeText) {
+      addToast("Clipboard access is unavailable in this browser", "warning");
+      return;
+    }
 
     navigator.clipboard.writeText(summary)
       .then(() => addToast("Summary copied to clipboard", "success"))
@@ -168,31 +228,31 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                 <div>
                   <div className="flex items-center gap-3 mb-6">
                     <Shield size={24} className="text-[#00D4A8]" />
-                    <h1 className="text-xl font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Triage Report</h1>
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Triage Report</h1>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-y-6 gap-x-12">
                     <div>
-                      <p className="text-[10px] text-[#7A8DA8] uppercase tracking-widest mb-1">Patient Name</p>
+                      <p className="text-xs sm:text-sm text-[#7A8DA8] uppercase tracking-[0.12em] mb-1">Patient Name</p>
                       <p className="text-sm font-semibold text-[#FAFAFA]">{patientData.name || 'Unknown'}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-[#7A8DA8] uppercase tracking-widest mb-1">Organ System</p>
+                      <p className="text-xs sm:text-sm text-[#7A8DA8] uppercase tracking-[0.12em] mb-1">Organ System</p>
                       <p className="text-sm font-semibold text-[#FAFAFA]">{organLabels[reportData.organType] || reportData.organType}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-[#7A8DA8] uppercase tracking-widest mb-1">Metadata</p>
-                      <p className="text-[11px] font-medium text-[#FAFAFA] opacity-80">{patientData.age}y · {patientData.gender}</p>
+                      <p className="text-xs sm:text-sm text-[#7A8DA8] uppercase tracking-[0.12em] mb-1">Metadata</p>
+                      <p className="text-sm font-medium text-[#FAFAFA] opacity-80">{patientData.age}y · {patientData.gender}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-[#7A8DA8] uppercase tracking-widest mb-1">Report ID</p>
-                      <p className="text-[11px] font-mono text-[#FAFAFA] opacity-80">{reportData.reportId || 'OD-PENDING'}</p>
+                      <p className="text-xs sm:text-sm text-[#7A8DA8] uppercase tracking-[0.12em] mb-1">Report ID</p>
+                      <p className="text-sm font-mono text-[#FAFAFA] opacity-80">{reportData.reportId || 'OD-PENDING'}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-10 pt-6 border-t border-[rgba(255,255,255,0.05)]">
-                   <p className="text-[10px] text-[#555] tracking-widest uppercase">{timestamp}</p>
+                   <p className="text-xs sm:text-sm text-[#555] tracking-[0.12em] uppercase">{timestamp}</p>
                 </div>
               </div>
 
@@ -212,7 +272,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                   <AlertTriangle size={32} style={{ color: triage.text }} />
                   <div className="absolute inset-0 animate-pulse opacity-20" style={{ background: triage.text }} />
                 </div>
-                <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-2" style={{ color: triage.text }}>
+                <p className="text-sm font-bold tracking-[0.16em] uppercase mb-2" style={{ color: triage.text }}>
                   Triage Status
                 </p>
                 <div 
@@ -245,7 +305,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                   />
                 </div>
                 
-                <div className="flex justify-between items-center text-[10px] tracking-widest text-[#555] uppercase font-bold">
+                <div className="flex justify-between items-center text-xs sm:text-sm tracking-[0.12em] text-[#555] uppercase font-bold">
                   <span>Confidence: {(reportData.confidenceBand[0] * 100).toFixed(0)}%</span>
                   <span>Target: {(reportData.confidenceBand[1] * 100).toFixed(0)}%</span>
                 </div>
@@ -259,7 +319,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                   borderColor: triage.text 
                 }}
               >
-                <p className="text-[10px] font-black tracking-[0.2em] uppercase mb-4" style={{ color: triage.text }}>
+                <p className="text-xs sm:text-sm font-black tracking-[0.14em] uppercase mb-4" style={{ color: triage.text }}>
                   Clinical Risk Assessment
                 </p>
                 <p className="text-sm font-semibold leading-relaxed text-[#FAFAFA] tracking-wide">
@@ -275,7 +335,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                   onClick={() => setShowReasoning(!showReasoning)}
                   className="w-full flex items-center justify-between p-6 hover:bg-[rgba(255,255,255,0.02)] transition-colors"
                 >
-                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Intelligence Trace</span>
+                  <span className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Intelligence Trace</span>
                   <ChevronDown size={18} className={`text-[#555] transition-transform duration-500 ${showReasoning ? 'rotate-180' : ''}`} />
                 </button>
                 {showReasoning && (
@@ -294,7 +354,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
               {/* Image Analysis */}
               <div className="glass-card p-8">
-                 <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#7A8DA8] uppercase mb-8">Vision Analysis Attention</h2>
+                 <h2 className="text-sm font-bold tracking-[0.14em] text-[#7A8DA8] uppercase mb-8">Vision Analysis Attention</h2>
                  {reportData.heatmapBase64 ? (
                   <div className="relative">
                     <img src={`data:image/png;base64,${reportData.heatmapBase64}`} alt="Heatmap" className="w-full grayscale-[0.2] contrast-[1.1]" />
@@ -302,7 +362,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                   </div>
                  ) : (
                   <div className="aspect-video bg-[rgba(255,255,255,0.02)] border border-dashed border-[rgba(255,255,255,0.1)] flex items-center justify-center">
-                    <p className="text-[10px] text-[#555] uppercase tracking-widest">Awaiting Vision Engine Response</p>
+                    <p className="text-xs sm:text-sm text-[#555] uppercase tracking-[0.12em]">Awaiting Vision Engine Response</p>
                   </div>
                  )}
               </div>
@@ -310,18 +370,18 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
               {/* View Toggle and Text */}
               <div className="glass-card p-8 flex flex-col">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#7A8DA8] uppercase">Clinical Context</h2>
+                  <h2 className="text-sm font-bold tracking-[0.14em] text-[#7A8DA8] uppercase">Clinical Context</h2>
                   <div className="flex bg-[rgba(255,255,255,0.03)] p-1 border border-[rgba(255,255,255,0.05)]">
                     <button 
                       onClick={() => setView('doctor')}
-                      className={`px-4 py-2 text-[9px] font-bold uppercase tracking-wider transition-all
+                      className={`px-4 py-2 text-xs sm:text-sm font-bold uppercase tracking-[0.12em] transition-all
                         ${view === 'doctor' ? 'bg-[#00D4A8] text-[#050505]' : 'text-[#7A8DA8] hover:text-white'}`}
                     >
                       Medical
                     </button>
                     <button 
                       onClick={() => setView('patient')}
-                      className={`px-4 py-2 text-[9px] font-bold uppercase tracking-wider transition-all
+                      className={`px-4 py-2 text-xs sm:text-sm font-bold uppercase tracking-[0.12em] transition-all
                         ${view === 'patient' ? 'bg-[#00D4A8] text-[#050505]' : 'text-[#7A8DA8] hover:text-white'}`}
                     >
                       Plain
@@ -343,13 +403,13 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
                  onClick={() => setShowRecs(!showRecs)}
                  className="w-full flex items-center justify-between p-8"
                >
-                 <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Clinical Decision Support</h2>
+                 <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Clinical Decision Support</h2>
                  <ChevronDown size={18} className={`text-[#555] transition-transform duration-500 ${showRecs ? 'rotate-180' : ''}`} />
                </button>
                {showRecs && (
                  <div className="px-8 pb-10">
                    <div className="mb-8 p-6 bg-[rgba(0,212,168,0.05)] border-l-4 border-[#00D4A8]">
-                     <p className="text-[10px] font-black text-[#00D4A8] uppercase tracking-[0.2em] mb-4">Recommended Pathway</p>
+                     <p className="text-xs sm:text-sm font-black text-[#00D4A8] uppercase tracking-[0.14em] mb-4">Recommended Pathway</p>
                      <p className="text-sm text-[#FAFAFA] leading-relaxed tracking-wide font-medium">{reportData.triageRecommendation}</p>
                    </div>
                    
@@ -377,7 +437,7 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
               <button
                 onClick={handleDownloadPDF}
                 disabled={isDownloading}
-                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
               >
                 {isDownloading ? <RefreshCw className="animate-spin" size={14} /> : <Download size={14} />}
                 {isDownloading ? 'Processing...' : 'Export PDF'}
@@ -385,21 +445,21 @@ ${reportData.reportId ? `Report ID: ${reportData.reportId}\n` : ''}DISCLAIMER: D
               
               <button
                 onClick={handlePrint}
-                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
               >
                 <Printer size={14} /> Print Report
               </button>
 
               <button
                 onClick={handleCopySummary}
-                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                className="flex items-center justify-center gap-3 py-5 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
               >
                 <Copy size={14} /> Copy Summary
               </button>
 
               <button
                 onClick={handleNewAnalysis}
-                className="flex items-center justify-center gap-3 py-5 bg-[#00D4A8] text-[#050505] text-[10px] font-bold uppercase tracking-[0.2em] hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all"
+                className="flex items-center justify-center gap-3 py-5 bg-[#00D4A8] text-[#050505] text-sm font-bold uppercase tracking-[0.14em] hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all"
               >
                 <RefreshCw size={14} /> New Case
               </button>

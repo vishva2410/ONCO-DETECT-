@@ -74,10 +74,10 @@ export default function Analysis() {
         // Step 6 (Complete)
         setCurrentStep(6);
         setStepsComplete(true);
-        const reportId = "OD-" + Date.now().toString(36).toUpperCase();
-        setReportData({ ...res.data, reportId });
+        const finalReportId = res.data.reportId;
+        setReportData(res.data);
 
-        setTimeout(() => navigate('/report'), 1000);
+        setTimeout(() => navigate(`/report/${finalReportId}`), 1000);
       } catch (err) {
         console.error('Analysis error:', err);
         if (err.code === 'ECONNABORTED') {
@@ -140,29 +140,28 @@ export default function Analysis() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[rgba(0,212,168,0.1)] border border-[rgba(0,212,168,0.2)] mb-4">
             <div className="w-1.5 h-1.5 bg-[#00D4A8] animate-pulse rounded-full" />
-            <span className="text-[10px] font-bold tracking-[0.2em] text-[#00D4A8] uppercase">Analysis in Progress</span>
+            <span className="text-xs sm:text-sm font-bold tracking-[0.14em] text-[#00D4A8] uppercase">Analysis in Progress</span>
           </div>
-          <h1 className="text-3xl font-bold text-[#FAFAFA] tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#FAFAFA] tracking-[0.08em] mb-4">
             {patientData.name || 'Patient'} · <span className="opacity-50">{organLabel}</span>
           </h1>
-          <p className="text-sm text-[#7A8DA8] tracking-[0.1em] uppercase">
+          <p className="text-sm sm:text-base text-[#7A8DA8] tracking-[0.08em] uppercase">
             {patientData.age}y · {patientData.gender} · {timestamp}
           </p>
         </Motion.div>
 
         {/* Pipeline Flowchart */}
-        <div className="relative flex items-center justify-between gap-4 py-20 px-4 mb-12">
-          {/* Connecting Lines Layer */}
-          <div className="absolute top-1/2 left-0 w-full h-px bg-[rgba(255,255,255,0.05)] -translate-y-1/2 z-0" />
-          
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-12">
             {pipelineSteps.map((step, idx) => {
               const isComplete = idx < currentStep || (stepsComplete && idx === pipelineSteps.length - 1);
               const isActive = idx === currentStep && !stepsComplete;
               const Icon = step.icon;
 
             return (
-              <div key={step.id} className="relative z-10 flex flex-col items-center group">
-                {/* Node */}
+              <div
+                key={step.id}
+                className="relative z-10 flex flex-col items-start gap-4 group p-5 sm:p-6 border border-[rgba(255,255,255,0.06)] bg-[rgba(13,22,34,0.7)]"
+              >
                 <Motion.div
                   initial={false}
                   animate={{
@@ -192,23 +191,12 @@ export default function Analysis() {
                   )}
                 </Motion.div>
 
-                {/* Data Particles (Flow Effect) */}
-                {isActive && idx < pipelineSteps.length - 1 && (
-                  <Motion.div 
-                    initial={{ left: '100%', opacity: 0 }}
-                    animate={{ left: '200%', opacity: [0, 1, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-1/2 w-4 h-[2px] bg-[#00D4A8] z-20"
-                  />
-                )}
-
-                {/* Label */}
-                <div className="absolute top-[calc(100%+16px)] text-center w-32">
-                  <p className={`text-[10px] font-bold uppercase tracking-[0.1em] transition-colors
+                <div className="text-left">
+                  <p className={`text-sm font-bold uppercase tracking-[0.08em] transition-colors
                     ${isComplete || isActive ? 'text-[#FAFAFA]' : 'text-[#5a6f8a]'}`}>
                     {step.label}
                   </p>
-                  <p className={`text-[9px] mt-1 transition-colors
+                  <p className={`text-xs sm:text-sm mt-1 transition-colors
                     ${isActive ? 'text-[#00D4A8]' : 'text-[#5a6f8a]'}`}>
                     {isComplete ? 'PROCESSED' : isActive ? 'RUNNING...' : 'PENDING'}
                   </p>
@@ -231,19 +219,19 @@ export default function Analysis() {
               >
                 {!stepsComplete ? (
                   <div className="flex flex-col items-center">
-                    <p className="text-[#888] text-sm italic mb-8">
+                    <p className="text-[#888] text-base italic mb-8 leading-relaxed">
                       "Processing patient clinical history through vision/LLM pipeline"
                     </p>
                     <button 
                       onClick={handleCancel}
-                      className="text-[9px] font-bold text-[#555] hover:text-[#FF4444] uppercase tracking-[0.3em] transition-colors"
+                      className="text-xs sm:text-sm font-bold text-[#555] hover:text-[#FF4444] uppercase tracking-[0.14em] transition-colors"
                     >
                       ABORT_ANALYSIS_REQUEST
                     </button>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center animate-fade-in-up">
-                    <div className="px-6 py-2 bg-[rgba(0,212,168,0.1)] border border-[#00D4A8] text-[#00D4A8] text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <div className="px-6 py-2 bg-[rgba(0,212,168,0.1)] border border-[#00D4A8] text-[#00D4A8] text-sm font-bold uppercase tracking-[0.14em]">
                       SUCCESS: REPORT_READY
                     </div>
                   </div>
@@ -264,13 +252,13 @@ export default function Analysis() {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                       onClick={handleRetry}
-                      className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#FAFAFA] text-[#050505] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white transition-all"
+                      className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#FAFAFA] text-[#050505] text-sm font-bold uppercase tracking-[0.14em] hover:bg-white transition-all"
                     >
                       <RotateCcw size={14} /> System Retry
                     </button>
                     <button
                       onClick={handleStartOver}
-                      className="inline-flex items-center justify-center gap-3 px-8 py-4 border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                      className="inline-flex items-center justify-center gap-3 px-8 py-4 border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
                     >
                       <XCircle size={14} /> Abort to Start
                     </button>

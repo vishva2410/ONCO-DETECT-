@@ -37,7 +37,7 @@ class ReportRequest(BaseModel):
     confidenceNote: str
     auditFlags: List[str]
     auditPassed: bool
-    recommendations: List[str]
+    recommendations: List[str] = []
     heatmapBase64: Optional[str] = None
     modelSource: Optional[str] = "resnet50"
 

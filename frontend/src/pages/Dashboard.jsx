@@ -70,13 +70,13 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-1.5 bg-[#00D4A8] animate-pulse" />
-              <span className="text-[10px] font-bold tracking-[0.3em] text-[#00D4A8] uppercase">Neural Network Engine</span>
+              <span className="text-xs sm:text-sm font-bold tracking-[0.18em] text-[#00D4A8] uppercase">Neural Network Engine</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-[#FAFAFA] uppercase">System Overview</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.12em] text-[#FAFAFA] uppercase">System Overview</h1>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)]">
              <Terminal size={12} className="text-[#555]" />
-             <span className="text-[10px] font-mono text-[#7A8DA8] tracking-widest uppercase">Kernel_State: Stable</span>
+             <span className="text-xs sm:text-sm font-mono text-[#7A8DA8] tracking-[0.12em] uppercase">Kernel_State: Stable</span>
           </div>
         </div>
 
@@ -89,9 +89,9 @@ export default function Dashboard() {
             { label: "Confidence Floor", value: "94.2%", sub: "Audit Threshold", color: "#FFBC42" }
           ].map((stat) => (
             <div key={stat.label} className="glass-card p-6 border-t font-semibold" style={{ borderTop: `2px solid ${stat.color}44` }}>
-              <p className="text-[9px] text-[#7A8DA8] tracking-[0.2em] uppercase mb-4">{stat.label}</p>
+              <p className="text-xs text-[#7A8DA8] tracking-[0.14em] uppercase mb-4">{stat.label}</p>
               <p className="text-2xl font-bold text-[#FAFAFA] mb-1">{stat.value}</p>
-              <p className="text-[10px] text-[#444] tracking-wider uppercase">{stat.sub}</p>
+              <p className="text-xs sm:text-sm text-[#444] tracking-[0.08em] uppercase">{stat.sub}</p>
             </div>
           ))}
         </div>
@@ -102,16 +102,16 @@ export default function Dashboard() {
           {/* Architecture Visualizer (Left) */}
           <div className="col-span-12 lg:col-span-8 glass-card p-10 relative overflow-hidden">
             <div className="flex items-center justify-between mb-10">
-              <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">System Architecture</h2>
+              <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">System Architecture</h2>
               <div className="flex items-center gap-4">
                 <Circle size={8} className="fill-emerald-400 text-emerald-400 animate-pulse" />
-                <span className="text-[9px] font-bold text-[#555] tracking-widest uppercase">Flow_Active</span>
+                <span className="text-xs font-bold text-[#555] tracking-[0.14em] uppercase">Flow_Active</span>
               </div>
             </div>
 
             {/* SVG Graph */}
-            <div className="w-full">
-               <svg viewBox="0 0 800 300" className="w-full h-auto opacity-80" strokeLinecap="square">
+            <div className="w-full overflow-x-auto">
+               <svg viewBox="0 0 800 300" className="w-full min-w-[760px] h-auto opacity-80" strokeLinecap="square">
                  <defs>
                    <linearGradient id="edgeStep" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="transparent" />
@@ -168,17 +168,17 @@ export default function Dashboard() {
             
             {/* Action Card */}
             <div className="glass-card p-10 bg-[rgba(0,212,168,0.02)]">
-               <h3 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase mb-8">Quick Actions</h3>
+               <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase mb-8">Quick Actions</h3>
                <button 
                 onClick={() => navigate('/new-analysis')}
-                className="w-full flex items-center justify-between p-6 bg-[#00D4A8] text-[#050505] text-[10px] font-bold uppercase tracking-[0.2em] mb-4 hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all"
+                className="w-full flex items-center justify-between p-6 bg-[#00D4A8] text-[#050505] text-sm font-bold uppercase tracking-[0.14em] mb-4 hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all"
                >
                  <span>Start New Analysis</span>
                  <Zap size={16} />
                </button>
                <button 
                 onClick={() => setCaseLibOpen(true)}
-                className="w-full flex items-center justify-between p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                className="w-full flex items-center justify-between p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
                >
                  <span>Load Sample Case</span>
                  <Activity size={16} />
@@ -187,7 +187,7 @@ export default function Dashboard() {
 
             {/* Accuracy Card */}
             <div className="glass-card p-10">
-               <h3 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase mb-10 text-center">Engine Performance</h3>
+               <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase mb-10 text-center">Engine Performance</h3>
                <div className="flex items-center justify-center relative">
                  <svg width="140" height="140" className="-rotate-90">
                    <circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="8" />
@@ -199,7 +199,7 @@ export default function Dashboard() {
                  </svg>
                  <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-2xl font-bold font-mono">{confidenceAnim.toFixed(1)}%</span>
-                    <span className="text-[10px] text-[#555] uppercase tracking-widest font-bold">Accuracy</span>
+                    <span className="text-xs sm:text-sm text-[#555] uppercase tracking-[0.12em] font-bold">Accuracy</span>
                  </div>
                </div>
             </div>
@@ -209,9 +209,9 @@ export default function Dashboard() {
           <div className="col-span-12 glass-card p-10">
             <div className="flex items-center gap-3 mb-8">
               <Terminal size={14} className="text-[#00D4A8]" />
-              <h3 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">System Execution Logs</h3>
+              <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">System Execution Logs</h3>
             </div>
-            <div className="font-mono text-[10px] space-y-4 tracking-wider max-h-60 overflow-y-auto custom-scrollbar pr-4">
+            <div className="font-mono text-xs sm:text-sm space-y-4 tracking-[0.08em] max-h-60 overflow-y-auto custom-scrollbar pr-4">
                {systemLogs.map((log, i) => (
                  <div key={i} className="flex gap-10 border-b border-[rgba(255,255,255,0.02)] pb-3">
                    <span className="text-[#333] shrink-0 uppercase">{log.time}</span>

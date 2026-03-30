@@ -19,12 +19,14 @@ export default function Entrance() {
       { time: 3500, stage: 2 },
     ];
 
-    sequence.forEach((item) => {
+    const timers = sequence.map((item) =>
       setTimeout(() => {
         if (item.log) setLogs(prev => [...prev.slice(-3), item.log]);
         if (item.stage !== undefined) setInitStage(item.stage);
-      }, item.time);
-    });
+      }, item.time)
+    );
+
+    return () => timers.forEach((timer) => clearTimeout(timer));
   }, []);
 
   return (
@@ -44,7 +46,7 @@ export default function Entrance() {
         />
       </div>
 
-      <div className="z-10 flex flex-col items-center justify-center text-center px-6 max-w-4xl mx-auto w-full">
+      <div className="z-10 flex flex-col items-center justify-center text-center px-5 sm:px-6 max-w-5xl mx-auto w-full">
         
         {/* Stage 0/1: Logo Core */}
         <Motion.div 
@@ -74,10 +76,10 @@ export default function Entrance() {
               transition={{ duration: 1, ease: "easeOut" }}
               className="mb-16"
             >
-              <h1 className="text-5xl md:text-7xl font-black tracking-[0.3em] text-[#FAFAFA] uppercase mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-[0.18em] md:tracking-[0.28em] text-[#FAFAFA] uppercase mb-6 leading-tight">
                 ONCO<span className="text-[#00D4A8]">DETECT</span>
               </h1>
-              <p className="text-[#7A8DA8] text-[10px] md:text-xs tracking-[0.4em] uppercase font-bold max-w-2xl mx-auto leading-loose">
+              <p className="text-[#7A8DA8] text-xs sm:text-sm tracking-[0.2em] md:tracking-[0.35em] uppercase font-bold max-w-2xl mx-auto leading-loose">
                 ADVANCED MULTI-ORGAN TRIAGE <br className="hidden md:block"/>
                 <span className="text-[#444] mt-4 block">CLINICAL REASONING AGENT 001</span>
               </p>
@@ -95,7 +97,7 @@ export default function Entrance() {
             >
               <button
                 onClick={() => navigate('/sign-in')}
-                className="group relative flex items-center justify-center gap-8 px-16 py-6 border border-[rgba(0,212,168,0.3)] text-[#00D4A8] text-[10px] font-bold tracking-[0.3em] uppercase transition-all duration-700 hover:bg-[#00D4A8] hover:text-[#050505] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] overflow-hidden"
+                className="group relative flex items-center justify-center gap-4 sm:gap-6 px-8 sm:px-12 md:px-16 py-5 sm:py-6 border border-[rgba(0,212,168,0.3)] text-[#00D4A8] text-sm font-bold tracking-[0.16em] sm:tracking-[0.24em] uppercase transition-all duration-700 hover:bg-[#00D4A8] hover:text-[#050505] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-4">
                   Initialize Terminal
@@ -111,7 +113,7 @@ export default function Entrance() {
       </div>
 
       {/* Initialize Logs (Bottom Right) */}
-      <div className="absolute bottom-10 right-10 text-left font-mono text-[9px] tracking-[0.2em] text-[#444] hidden md:block uppercase space-y-2">
+      <div className="absolute bottom-10 right-10 text-left font-mono text-[11px] tracking-[0.14em] text-[#444] hidden md:block uppercase space-y-2">
         {logs.map((log, i) => (
           <Motion.div 
             key={i}
@@ -125,7 +127,7 @@ export default function Entrance() {
       </div>
 
       {/* Terminal Decor (Bottom Left) */}
-      <div className="absolute bottom-10 left-10 text-left font-mono text-[9px] tracking-[0.2em] text-[#444] hidden md:block uppercase">
+      <div className="absolute bottom-10 left-10 text-left font-mono text-[11px] tracking-[0.14em] text-[#444] hidden md:block uppercase">
         <p>AUTH_STATE: UNAUTHORIZED</p>
         <p>NETWORK_STATUS: ENCRYPTED</p>
       </div>

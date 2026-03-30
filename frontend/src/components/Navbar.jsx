@@ -20,19 +20,20 @@ export default function Navbar() {
     { to: '/', label: 'ENTRANCE' },
     { to: '/dashboard', label: 'DASHBOARD' },
     { to: '/new-analysis', label: 'NEW ANALYSIS' },
+    { to: '/history', label: 'HISTORY' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.05)] bg-[#0A0F1E] bg-opacity-95 backdrop-blur-xl">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.05)] bg-[#0A0F1E]/95 backdrop-blur-xl shadow-[0_16px_50px_rgba(0,0,0,0.25)]">
+      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 md:px-12 h-22 min-h-[88px] flex items-center justify-between gap-4">
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-4 group cursor-pointer overflow-hidden">
           <AnimatedLogo />
           <div className="flex flex-col mt-1">
-            <span className="text-xl font-bold tracking-[0.2em] text-[#E8EDF5] uppercase leading-none">
+            <span className="text-lg sm:text-xl font-bold tracking-[0.16em] text-[#E8EDF5] uppercase leading-none">
               ONCO<span className="text-[#00D4A8]">DETECT</span>
             </span>
-            <span className="text-[9px] font-bold tracking-[0.2em] text-[#555] uppercase mt-1">
+            <span className="text-[11px] font-bold tracking-[0.14em] text-[#555] uppercase mt-1">
               v1.0 Research
             </span>
           </div>
@@ -47,7 +48,7 @@ export default function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative flex items-center justify-center h-full px-2 text-[11px] font-bold tracking-[0.25em] transition-colors duration-300 uppercase
+                className={`relative flex items-center justify-center h-full px-2 text-sm font-bold tracking-[0.18em] transition-colors duration-300 uppercase
                   ${isActive ? 'text-[#00D4A8]' : 'text-[#7A8DA8] hover:text-[#E8EDF5]'}
                 `}
               >
@@ -67,7 +68,7 @@ export default function Navbar() {
               <span className="absolute inline-flex h-full w-full rounded-full bg-[#00D4A8] opacity-75 animate-ping"></span>
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00D4A8]"></span>
             </div>
-            <span className="text-[10px] font-bold tracking-[0.2em] text-[#00D4A8] uppercase">LIVE</span>
+            <span className="text-xs font-bold tracking-[0.16em] text-[#00D4A8] uppercase">LIVE</span>
           </div>
         </div>
 
@@ -82,7 +83,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0A0F1E] border-t border-[rgba(255,255,255,0.05)] flex flex-col">
+        <div className="md:hidden bg-[#0A0F1E] border-t border-[rgba(255,255,255,0.05)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
           {links.map((link) => {
             const isActive = location.pathname === link.to;
             return (

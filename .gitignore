@@ -12,9 +12,11 @@ node_modules/
 npm-debug.log*
 
 # ─── Build Output ────────────────────────────────────
-oncodetect/frontend/dist/
-oncodetect/frontend/build/
 frontend/dist/
+frontend/build/
+backend/.venv/
+backend/venv/
+backend/*.egg-info/
 
 # ─── Environment & Secrets ───────────────────────────
 .env
@@ -33,7 +35,5 @@ Thumbs.db
 # ─── Logs ────────────────────────────────────────────
 *.log
 
-# ─── Reference / Design ──────────────────────────────
-# Stitch reference project & HTML design templates — local only
-onco-dashboard-ref/
-final ui/
+# ─── Local App Data ──────────────────────────────────
+backend/oncodetect.db

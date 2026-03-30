@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePatient } from '../context/usePatient';
 import Navbar from '../components/Navbar';
@@ -14,23 +14,30 @@ const organTypes = [
 
 export default function NewAnalysis() {
   const navigate = useNavigate();
-  const { updatePatientData, setScanFile, setScanPreviewUrl, addToast } = usePatient();
+  const { patientData, scanPreviewUrl, updatePatientData, setScanFile, setScanPreviewUrl, addToast } = usePatient();
   const fileInputRef = useRef(null);
+  const objectUrlRef = useRef('');
   const isVisible = usePageTransition(10);
+  const initialFormData = {
+    name: patientData.name || '',
+    age: patientData.age || '',
+    gender: patientData.gender || '',
+    symptoms: patientData.symptoms || '',
+    smokingHistory: Boolean(patientData.smokingHistory),
+    familyHistory: Boolean(patientData.familyHistory),
+  };
 
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    symptoms: '',
-    smokingHistory: false,
-    familyHistory: false,
-  });
-
-  const [selectedOrgan, setSelectedOrgan] = useState('');
+  const [formData, setFormData] = useState(initialFormData);
+  const [selectedOrgan, setSelectedOrgan] = useState(patientData.organType || '');
   const [localFile, setLocalFile] = useState(null);
-  const [localPreview, setLocalPreview] = useState('');
+  const [localPreview, setLocalPreview] = useState(scanPreviewUrl || '');
   const [dragActive, setDragActive] = useState(false);
+
+  useEffect(() => () => {
+    if (objectUrlRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -51,8 +58,13 @@ export default function NewAnalysis() {
       addToast('Please upload a valid image file (JPEG, PNG, DICOM).', 'error');
       return;
     }
+    if (objectUrlRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
+    const previewUrl = URL.createObjectURL(file);
+    objectUrlRef.current = previewUrl;
     setLocalFile(file);
-    setLocalPreview(URL.createObjectURL(file));
+    setLocalPreview(previewUrl);
     addToast('Scan image uploaded successfully', 'success');
   };
 
@@ -94,10 +106,10 @@ export default function NewAnalysis() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-4">
              <div className="w-1.5 h-1.5 bg-[#00D4A8]" />
-             <span className="text-[10px] font-bold tracking-[0.3em] text-[#00D4A8] uppercase">Analysis Intake</span>
+             <span className="text-xs sm:text-sm font-bold tracking-[0.18em] text-[#00D4A8] uppercase">Analysis Intake</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-[0.2em] text-[#FAFAFA] mb-4 uppercase">New Clinical Case</h1>
-          <p className="text-sm text-[#7A8DA8] tracking-widest uppercase max-w-2xl">Initialize the diagnostic pipeline by providing patient data and medical imaging scans.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.14em] text-[#FAFAFA] mb-4 uppercase">New Clinical Case</h1>
+          <p className="text-base text-[#7A8DA8] tracking-[0.12em] uppercase max-w-2xl leading-relaxed">Initialize the diagnostic pipeline by providing patient data and medical imaging scans.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -106,13 +118,13 @@ export default function NewAnalysis() {
           <section className="glass-card p-10 relative overflow-hidden">
             <div className="flex items-center gap-4 mb-10 pb-6 border-b border-[rgba(255,255,255,0.05)]">
               <User size={18} className="text-[#00D4A8]" />
-              <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Patient Profile</h2>
+              <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Patient Profile</h2>
             </div>
             
             <form className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Full Name</label>
+                  <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Full Name</label>
                   <input
                     type="text"
                     name="name"
@@ -124,7 +136,7 @@ export default function NewAnalysis() {
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <label className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Age</label>
+                    <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Age</label>
                     <input
                       type="number"
                       name="age"
@@ -135,12 +147,12 @@ export default function NewAnalysis() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Gender</label>
+                    <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Gender</label>
                     <select
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
-                      className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-[11px] text-[#666] tracking-widest transition-all focus:border-[#00D4A8] focus:text-[#FAFAFA] outline-none rounded-none appearance-none focus:bg-[rgba(0,212,168,0.02)]"
+                      className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-sm text-[#666] tracking-[0.12em] transition-all focus:border-[#00D4A8] focus:text-[#FAFAFA] outline-none rounded-none appearance-none focus:bg-[rgba(0,212,168,0.02)]"
                     >
                       <option value="">SELECT</option>
                       <option value="Male">MALE</option>
@@ -152,7 +164,7 @@ export default function NewAnalysis() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Clinical Presentation</label>
+                <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Clinical Presentation</label>
                 <textarea
                   name="symptoms"
                   value={formData.symptoms}
@@ -177,7 +189,7 @@ export default function NewAnalysis() {
                       <CheckCircle2 size={12} className="text-[#050505]" />
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Smoking History</span>
+                  <span className="text-xs sm:text-sm font-bold tracking-[0.08em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Smoking History</span>
                 </label>
                 
                 <label className="flex items-center gap-4 cursor-pointer group p-4 border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.01)] transition-colors">
@@ -193,7 +205,7 @@ export default function NewAnalysis() {
                       <CheckCircle2 size={12} className="text-[#050505]" />
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Genetics History</span>
+                  <span className="text-xs sm:text-sm font-bold tracking-[0.08em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Genetics History</span>
                 </label>
               </div>
             </form>
@@ -204,7 +216,7 @@ export default function NewAnalysis() {
             <section className="glass-card p-10 bg-[rgba(0,144,255,0.01)]">
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[rgba(255,255,255,0.05)]">
                 <Activity size={18} className="text-[#0090FF]" />
-                <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Modality Selection</h2>
+                <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Modality Selection</h2>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -220,7 +232,8 @@ export default function NewAnalysis() {
                     }`}
                   >
                     <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-500">{organ.icon}</div>
-                    <div className="text-[9px] font-black tracking-[0.25em] uppercase text-[#FAFAFA] leading-tight">{organ.label}</div>
+                    <div className="text-xs font-black tracking-[0.14em] uppercase text-[#FAFAFA] leading-tight">{organ.label}</div>
+                    <div className="mt-2 text-xs text-[#7A8DA8] leading-relaxed">{organ.desc}</div>
                     {selectedOrgan === organ.id && (
                       <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0090FF]" />
                     )}
@@ -232,7 +245,7 @@ export default function NewAnalysis() {
             <section className="glass-card p-10">
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[rgba(255,255,255,0.05)]">
                 <FileType size={18} className="text-[#FAFAFA]" />
-                <h2 className="text-[11px] font-bold tracking-[0.2em] text-[#FAFAFA] uppercase">Imaging Payload</h2>
+                <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Imaging Payload</h2>
               </div>
 
               <div
@@ -255,12 +268,12 @@ export default function NewAnalysis() {
                        <img src={localPreview} alt="Preview" className="h-44 object-contain border border-[rgba(255,255,255,0.1)] shadow-2xl" />
                        <div className="absolute inset-0 border border-[rgba(0,212,168,0.2)] pointer-events-none" />
                     </div>
-                    <p className="text-[10px] tracking-[0.2em] text-[#00D4A8] font-black uppercase mb-2">SCAN_LOADED_OK</p>
-                    <p className="text-[10px] text-[#555] font-mono tracking-widest">{localFile.name.toUpperCase()}</p>
+                    <p className="text-xs sm:text-sm tracking-[0.14em] text-[#00D4A8] font-black uppercase mb-2">SCAN_LOADED_OK</p>
+                    <p className="text-xs sm:text-sm text-[#555] font-mono tracking-[0.12em] break-all">{localFile?.name?.toUpperCase?.() || 'SAMPLE_SCAN.JPG'}</p>
                     <button
                       type="button"
-                      onClick={() => { setLocalFile(null); setLocalPreview(''); }}
-                      className="mt-8 text-[9px] font-black tracking-[0.3em] text-[#FF4444] hover:text-[#ff6b6b] uppercase"
+                      onClick={() => { setLocalFile(null); setLocalPreview(''); setScanPreviewUrl(''); }}
+                      className="mt-8 text-xs font-black tracking-[0.18em] text-[#FF4444] hover:text-[#ff6b6b] uppercase"
                     >
                       [ EJECT_FILE ]
                     </button>
@@ -268,12 +281,12 @@ export default function NewAnalysis() {
                 ) : (
                   <>
                     <UploadCloud size={40} className={`mx-auto mb-6 transition-colors duration-500 ${dragActive ? 'text-[#00D4A8]' : 'text-[#333]'}`} />
-                    <p className="text-[10px] font-black tracking-[0.25em] text-[#FAFAFA] uppercase mb-4">Transfer Image Data</p>
-                    <p className="text-[9px] tracking-widest text-[#555] uppercase mb-10 leading-relaxed">DRAG_DROP OR SELECT_LOCAL_SOURCE<br/>DICOM / PNG / JPEG</p>
+                    <p className="text-sm font-black tracking-[0.16em] text-[#FAFAFA] uppercase mb-4">Transfer Image Data</p>
+                    <p className="text-xs sm:text-sm tracking-[0.12em] text-[#555] uppercase mb-10 leading-relaxed">DRAG_DROP OR SELECT_LOCAL_SOURCE<br/>DICOM / PNG / JPEG</p>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-8 py-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                      className="px-8 py-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.18em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
                     >
                       Browse Filesystem
                     </button>
@@ -295,7 +308,7 @@ export default function NewAnalysis() {
         <div className="mt-16 flex justify-end">
           <button
             onClick={handleSubmit}
-            className="group flex items-center gap-6 px-16 py-6 bg-[#00D4A8] text-[#050505] text-[11px] font-black uppercase tracking-[0.4em] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] transition-all duration-500"
+            className="group w-full sm:w-auto justify-center flex items-center gap-4 sm:gap-6 px-8 sm:px-12 md:px-16 py-5 sm:py-6 bg-[#00D4A8] text-[#050505] text-sm font-black uppercase tracking-[0.18em] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] transition-all duration-500"
           >
             Run Neural Analysis
             <ArrowRight size={20} className="group-hover:translate-x-3 transition-transform duration-500" />

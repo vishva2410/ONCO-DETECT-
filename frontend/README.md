@@ -1,16 +1,61 @@
-# React + Vite
+# OncoDetect Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React + Vite frontend for OncoDetect.
 
-Currently, two official plugins are available:
+## Pages
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Entrance
+- Sign In
+- Dashboard
+- New Analysis
+- Analysis
+- Report
+- History
 
-## React Compiler
+## Dev Run
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Default local URL:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+http://127.0.0.1:5173
+```
+
+## Backend Integration
+
+During local development, Vite proxies `/api` requests to the backend.
+
+Default proxy target:
+
+```text
+http://127.0.0.1:8000
+```
+
+Override it when needed:
+
+```bash
+VITE_BACKEND_PROXY_URL=http://127.0.0.1:8004 npm run dev
+```
+
+For deployed environments, set:
+
+```bash
+VITE_API_URL=https://your-api.example.com
+```
+
+## Demo Login
+
+```text
+username: admin
+password: password123
+```
+
+## Notes
+
+- The frontend is designed as a cinematic healthcare product demo.
+- Protected routes require a valid auth token from the FastAPI backend.
+- The report screen supports history rehydration, copy summary, print, and PDF export.

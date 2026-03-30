@@ -13,6 +13,7 @@ class PatientData(BaseModel):
 
 
 class AnalysisResponse(BaseModel):
+    reportId: Optional[str] = None
     organType: str
     probabilityScore: float
     confidenceBand: List[float]
@@ -23,6 +24,7 @@ class AnalysisResponse(BaseModel):
     doctorExplanation: str
     patientExplanation: str
     triageRecommendation: str = ""
+    recommendations: List[str] = []
     differentialHints: List[str] = []
     confidenceNote: str = ""
     auditPassed: bool = True
