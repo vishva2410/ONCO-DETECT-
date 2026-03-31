@@ -1,286 +1,122 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-b9ef58?style=for-the-badge&logo=moleculer&logoColor=11130f" alt="OncoDetect Badge" />
+  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-10b981?style=for-the-badge&logo=health&logoColor=white" alt="OncoDetect Badge" />
 </p>
 
-<h1 align="center">OncoDetect</h1>
+<h1 align="center">✨ OncoDetect</h1>
 
 <p align="center">
-  <b>Recruiter-ready full-stack oncology triage prototype</b><br />
-  <sub>Clinical intake • vision inference routing • AI reasoning • audited reporting • PDF export</sub>
+  <b>A premium, full-stack AI oncology triage prototype.</b><br />
+  <sub>Built to demonstrate product-driven AI engineering, seamless UX, and robust clinical ML pipelines.</sub>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=11130f" alt="React" />
   <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/FastAPI-Python-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/SQLite-Local%20Persistence-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite" />
+  <img src="https://img.shields.io/badge/Llama_3.3_70B-Groq-f97316?style=flat-square&logo=meta&logoColor=white" alt="LLM" />
   <img src="https://img.shields.io/badge/Render-Deploy-46E3B7?style=flat-square&logo=render&logoColor=11130f" alt="Render" />
 </p>
 
-## Overview
+<br/>
 
-**OncoDetect** is a polished healthcare AI demo that simulates a clinical cancer triage workflow across:
+## 👋 Welcome to OncoDetect!
 
-- **brain MRI**
-- **lung X-ray**
-- **breast mammography**
+**OncoDetect** is a polished, end-to-end healthcare AI demonstration that simulates a modern clinical cancer triage workflow for **Brain MRIs**, **Lung X-rays**, and **Breast Mammography**. 
 
-It combines a cinematic frontend with a working FastAPI backend, authentication, persisted report history, PDF export, and AI-assisted clinical explanations.
+It’s completely open-source and built from the ground up to showcase what a production-ready AI product looks like. It combines a stunning, highly-animated React frontend with a powerful Python backend that runs multiple ML models and a Llama 3 LLM reasoning engine!
 
-> [!IMPORTANT]
-> This project is for demonstration, portfolio, and educational use only. It is not a medical diagnosis system.
+> [!CAUTION]
+> **Disclaimer:** This project is a prototype built for portfolio, educational, and demonstration purposes only. It is **not** a real medical device and should never be used for clinical diagnosis. 
 
-## What Recruiters Will Notice
+---
 
-- Full-stack product thinking, not just model code
-- Clean React UX with protected routes and responsive layouts
-- FastAPI backend with auth, history, and document generation
-- Structured AI output with fallback behavior when external keys are unavailable
-- Persistent case history for realistic product flow
-- Production-minded deployment shape via `render.yaml`
+## 🚀 Key Features
 
-## Product Flow
+* **🎨 Cinematic UX/UI:** Enjoy deep glassmorphism aesthetics, neon glows, and a simulated "neural link" scanning animation when processing medical images.
+* **🧠 Multi-Model Vision Routing:** The backend dynamically routes uploaded scans to specific ML models (PyTorch, ONNX, Keras) based on the organ type.
+* **💬 LLM Clinical Reasoning:** Uses Llama 3.3 70B via Groq to analyze the ML risk scores alongside patient demographics and symptoms, producing structured, readable clinical reports.
+* **🛡️ Self-Auditor AI:** An entirely separate AI agent constantly reviews the generated reports in real-time to ensure no dangerous medical advice or hallucinations were printed.
+* **📄 Print-Ready PDFs:** Clinicians can download professional, beautifully aligned PDF reports of the analysis via `ReportLab`.
+* **📂 Full Persistence:** Complete user authentication and an SQLite database to store patient history securely.
 
-```mermaid
-flowchart LR
-    A["Entrance"] --> B["Sign In"]
-    B --> C["Dashboard"]
-    C --> D["New Analysis"]
-    D --> E["Analysis Pipeline"]
-    E --> F["Report"]
-    F --> G["PDF Export"]
-    C --> H["Case History"]
-```
+---
 
-## Feature Set
-
-| Area | Details |
-| :-- | :-- |
-| **Authentication** | Demo login gate with protected clinical routes |
-| **Clinical Intake** | Patient demographics, symptoms, history, modality selection, scan upload |
-| **Vision Routing** | Organ-specific image analysis path for brain, lung, and breast |
-| **Reasoning Layer** | Doctor-facing and patient-facing structured explanations |
-| **Audit Layer** | Secondary self-audit of report quality and safety flags |
-| **Persistence** | Saved reports and browsable case history |
-| **Reporting** | PDF export and clipboard summary flow |
-| **UX** | Animated landing, dashboard, live analysis pipeline, cleaner typography and layout |
-
-## Architecture
+## 🛠️ Architecture
 
 ```mermaid
 flowchart TB
-    subgraph FE["Frontend"]
-        A["React 19 + Vite"]
-        B["Protected Routes"]
-        C["Analysis / Report UI"]
+    subgraph Frontend ["Frontend (React + Vite)"]
+        UI["Clinical UI & Animations"]
+        Wizard["Intake Wizard"]
+        ReportViewer["Report Dashboard"]
     end
 
-    subgraph API["Backend"]
-        D["FastAPI"]
-        E["Auth Router"]
-        F["Analyze Router"]
-        G["History Router"]
-        H["PDF Router"]
+    subgraph Backend ["Backend (FastAPI)"]
+        Sub1["Auth & History Routers"]
+        Sub2["PDF Generator"]
     end
 
-    subgraph CORE["AI + Domain Logic"]
-        I["Vision Router"]
-        J["Clinical Reasoner"]
-        K["Self Auditor"]
-        L["SQLAlchemy Models"]
+    subgraph AI_Core ["AI Reasoning Engine"]
+        Vision["Vision Models (CNNs)"]
+        Reasoner["Clinical Reasoner (Llama 3)"]
+        Auditor["Safety Auditor (LLM)"]
     end
 
-    A --> D
-    D --> E
-    D --> F
-    D --> G
-    D --> H
-    F --> I
-    F --> J
-    F --> K
-    D --> L
+    UI -->|Upload Scan| Sub1
+    Sub1 --> Vision
+    Vision -->|Probabilities| Reasoner
+    Reasoner -->|Draft Report| Auditor
+    Auditor -->|Verified Report| ReportViewer
 ```
 
-## Tech Stack
+---
 
-### Frontend
+## 💻 Tech Stack
 
-- React 19
-- Vite 8
-- Tailwind CSS 4
-- Framer Motion
-- Axios
-- Lucide React
+**Frontend:** React 19, Vite 8, Tailwind CSS v4, Context API  
+**Backend:** FastAPI, Uvicorn, SQLAlchemy, SQLite, ReportLab  
+**AI / ML Ecosystem:** Hugging Face Models (`onnx`, `keras`, `pytorch`), Groq SDK (Llama 3.3 70B)
 
-### Backend
+---
 
-- FastAPI
-- Uvicorn
-- SQLAlchemy
-- SQLite for local persistence
-- ReportLab
-- Groq SDK
-- Hugging Face model downloads for the vision router
+## ⚙️ Quick Start (Local Setup)
 
-## Local Setup
+Want to run OncoDetect on your own machine? It's super easy!
 
-### Clone
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vishva2410/ONCO-DETECT-.git
+   cd ONCO-DETECT-
+   ```
 
-```bash
-git clone https://github.com/vishva2410/ONCO-DETECT-.git
-cd ONCO-DETECT-
-```
+2. **Start the application:**
+   If you're on a Mac or Linux, simply run our setup script!
+   ```bash
+   ./start.sh
+   ```
+   *This single command automatically builds the Python virtual environment, installs all pip and npm dependencies, and boots up both servers!*
 
-### Backend
+3. **Enjoy!**
+   - **Frontend:** `http://localhost:5173`
+   - **Backend API:** `http://localhost:8000/docs`
+   
+   *(Use `admin` / `password123` to log into the demo portal)*
 
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
+> **Note on API Keys:** The backend logic requires a free [Groq API Key](https://console.groq.com/) for the LLM reasoning to work perfectly. Place it in `backend/.env` as `GROQ_API_KEY=your_key_here`. 
 
-### Frontend
+---
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## 🌍 Deployment
 
-### Open
+OncoDetect is fully ready for deployment on **Render.com**. 
+A `render.yaml` infrastructure-as-code file is included in the root directory. 
 
-```text
-Frontend: http://127.0.0.1:5173
-Backend:  http://127.0.0.1:8000
-```
+To deploy:
+1. Connect your Github Repo to Render via the "New Blueprint" button.
+2. Render will automatically spin up the static frontend site and the FastAPI Python web service seamlessly!
 
-### Demo Credentials
+---
 
-```text
-username: admin
-password: password123
-```
-
-## Environment Notes
-
-### Optional backend env vars
-
-| Variable | Purpose |
-| :-- | :-- |
-| `GROQ_API_KEY` | Enables live Groq reasoning instead of template fallback |
-| `FRONTEND_URL` | Allows production frontend origin in CORS |
-| `DATABASE_URL` | Overrides local SQLite database |
-
-### Optional frontend env vars
-
-| Variable | Purpose |
-| :-- | :-- |
-| `VITE_API_URL` | Direct API base URL for deployed frontend |
-| `VITE_BACKEND_PROXY_URL` | Dev-server proxy target override when local backend is not on `:8000` |
-
-## Local Behavior Without API Keys
-
-OncoDetect still works end to end without a `GROQ_API_KEY`.
-
-In that mode the app:
-
-- completes the analysis pipeline
-- returns structured fallback reasoning
-- marks the output with audit flags
-- still saves the report and supports history + PDF export
-
-That makes the repo easier to run for reviewers and recruiters.
-
-## API Snapshot
-
-### `POST /api/auth/login`
-
-Authenticates a clinician and returns a bearer token.
-
-### `POST /api/analyze`
-
-Accepts multipart form data:
-
-- `patient_data`
-- `scan_file`
-
-Returns structured report JSON including:
-
-```json
-{
-  "reportId": "uuid",
-  "organType": "lung",
-  "probabilityScore": 0.85,
-  "confidenceBand": [0.77, 0.93],
-  "triageLevel": "high",
-  "reasoningTrace": "Clinical reasoning...",
-  "riskSummary": "High-risk triage summary...",
-  "doctorExplanation": "Clinician-facing explanation...",
-  "patientExplanation": "Patient-friendly explanation...",
-  "triageRecommendation": "Next-step recommendation...",
-  "recommendations": [],
-  "differentialHints": ["...", "..."],
-  "confidenceNote": "Reliability note...",
-  "auditPassed": true,
-  "auditFlags": [],
-  "modelSource": "..."
-}
-```
-
-### `GET /api/reports`
-
-Returns saved case history for authenticated users.
-
-### `GET /api/reports/{id}`
-
-Returns a single saved report.
-
-### `POST /api/report/generate`
-
-Returns a downloadable PDF report.
-
-## Deployment
-
-This repo includes a Render blueprint in `render.yaml`.
-
-Recommended deployment split:
-
-- backend as a FastAPI web service
-- frontend as a Vite-built static site
-
-## Repo Structure
-
-```text
-.
-├── backend/
-│   ├── main.py
-│   ├── database.py
-│   ├── models/
-│   ├── reasoning/
-│   └── routers/
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   └── vite.config.js
-├── render.yaml
-├── start.sh
-└── README.md
-```
-
-## Status
-
-Current repo state includes:
-
-- fixed local auth flow
-- protected dashboard/history/report pages
-- saved reports with working history retrieval
-- successful PDF generation
-- improved frontend scale and alignment
-- configurable Vite proxy for cleaner local development
-
-## License
-
-Portfolio and educational use.
+<p align="center">
+  <i>Built with ❤️ for the future of AI in Healthcare.</i>
+</p>
