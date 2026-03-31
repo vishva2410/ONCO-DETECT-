@@ -1,122 +1,235 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-10b981?style=for-the-badge&logo=health&logoColor=white" alt="OncoDetect Badge" />
+  <img src="https://img.shields.io/badge/OncoDetect-AI%20Cancer%20Triage-10b981?style=for-the-badge&logo=moleculer&logoColor=white" />
+  <br/><br/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Llama_3.3_70B-Groq-f97316?style=flat-square&logo=meta&logoColor=white" />
+  <img src="https://img.shields.io/badge/Deploy-Render-46e3b7?style=flat-square&logo=render&logoColor=black" />
 </p>
 
-<h1 align="center">✨ OncoDetect</h1>
+# OncoDetect
 
-<p align="center">
-  <b>A premium, full-stack AI oncology triage prototype.</b><br />
-  <sub>Built to demonstrate product-driven AI engineering, seamless UX, and robust clinical ML pipelines.</sub>
-</p>
+**OncoDetect** is a full-stack AI-powered cancer triage system that processes medical imaging scans (Brain MRI, Lung CT, Breast Mammography) through deep learning models, interprets the results using a large language model, and generates clinician-ready diagnostic reports — all within a single, seamless web application.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=11130f" alt="React" />
-  <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/FastAPI-Python-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Llama_3.3_70B-Groq-f97316?style=flat-square&logo=meta&logoColor=white" alt="LLM" />
-  <img src="https://img.shields.io/badge/Render-Deploy-46E3B7?style=flat-square&logo=render&logoColor=11130f" alt="Render" />
-</p>
-
-<br/>
-
-## 👋 Welcome to OncoDetect!
-
-**OncoDetect** is a polished, end-to-end healthcare AI demonstration that simulates a modern clinical cancer triage workflow for **Brain MRIs**, **Lung X-rays**, and **Breast Mammography**. 
-
-It’s completely open-source and built from the ground up to showcase what a production-ready AI product looks like. It combines a stunning, highly-animated React frontend with a powerful Python backend that runs multiple ML models and a Llama 3 LLM reasoning engine!
-
-> [!CAUTION]
-> **Disclaimer:** This project is a prototype built for portfolio, educational, and demonstration purposes only. It is **not** a real medical device and should never be used for clinical diagnosis. 
+> **Disclaimer:** This is a research prototype. It is not a certified medical device and must not be used for real clinical diagnosis.
 
 ---
 
-## 🚀 Key Features
+## How It Works
 
-* **🎨 Cinematic UX/UI:** Enjoy deep glassmorphism aesthetics, neon glows, and a simulated "neural link" scanning animation when processing medical images.
-* **🧠 Multi-Model Vision Routing:** The backend dynamically routes uploaded scans to specific ML models (PyTorch, ONNX, Keras) based on the organ type.
-* **💬 LLM Clinical Reasoning:** Uses Llama 3.3 70B via Groq to analyze the ML risk scores alongside patient demographics and symptoms, producing structured, readable clinical reports.
-* **🛡️ Self-Auditor AI:** An entirely separate AI agent constantly reviews the generated reports in real-time to ensure no dangerous medical advice or hallucinations were printed.
-* **📄 Print-Ready PDFs:** Clinicians can download professional, beautifully aligned PDF reports of the analysis via `ReportLab`.
-* **📂 Full Persistence:** Complete user authentication and an SQLite database to store patient history securely.
+The application follows a structured 4-stage diagnostic pipeline:
+
+```mermaid
+flowchart LR
+    A["1. Patient Intake"] --> B["2. Vision Inference"]
+    B --> C["3. LLM Reasoning"]
+    C --> D["4. Report & PDF"]
+```
+
+| Stage | What Happens |
+|:------|:-------------|
+| **Patient Intake** | Clinician enters demographics, symptoms, selects organ type, and uploads the medical scan |
+| **Vision Inference** | The scan is routed to an organ-specific CNN model that outputs a malignancy probability score |
+| **LLM Reasoning** | Llama 3.3 70B analyzes the probability alongside clinical context to produce a structured report. A second LLM pass audits the report for safety |
+| **Report & PDF** | The final report is displayed in the UI and can be downloaded as a professionally formatted PDF |
 
 ---
 
-## 🛠️ Architecture
+## System Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Frontend ["Frontend (React + Vite)"]
-        UI["Clinical UI & Animations"]
-        Wizard["Intake Wizard"]
-        ReportViewer["Report Dashboard"]
+    subgraph Client["Frontend — React 19 + Vite 8"]
+        Entrance["Landing Page"]
+        Login["Authentication"]
+        Intake["Patient Intake Form"]
+        Scanner["Live Analysis View"]
+        Report["Clinical Report"]
+        History["Case Archive"]
     end
 
-    subgraph Backend ["Backend (FastAPI)"]
-        Sub1["Auth & History Routers"]
-        Sub2["PDF Generator"]
+    subgraph Server["Backend — FastAPI + Python"]
+        AuthRouter["Auth Router"]
+        AnalyzeRouter["Analyze Router"]
+        ReportRouter["Report & PDF Router"]
+        HistoryRouter["History Router"]
+        DB["SQLite Database"]
     end
 
-    subgraph AI_Core ["AI Reasoning Engine"]
-        Vision["Vision Models (CNNs)"]
-        Reasoner["Clinical Reasoner (Llama 3)"]
-        Auditor["Safety Auditor (LLM)"]
+    subgraph ML["AI / ML Core"]
+        VisionRouter["Vision Router"]
+        BrainModel["Brain CNN — Keras"]
+        LungModel["Lung CNN — ONNX"]
+        BreastModel["Breast CNN — PyTorch"]
+        Reasoner["Clinical Reasoner — Llama 3.3 70B"]
+        Auditor["Self-Auditor — Llama 3.3 70B"]
     end
 
-    UI -->|Upload Scan| Sub1
-    Sub1 --> Vision
-    Vision -->|Probabilities| Reasoner
-    Reasoner -->|Draft Report| Auditor
-    Auditor -->|Verified Report| ReportViewer
+    Intake -->|multipart form| AnalyzeRouter
+    AnalyzeRouter --> VisionRouter
+    VisionRouter --> BrainModel
+    VisionRouter --> LungModel
+    VisionRouter --> BreastModel
+    VisionRouter -->|probability score| Reasoner
+    Reasoner -->|draft report| Auditor
+    Auditor -->|verified report| Report
+    Report -->|request| ReportRouter
+    ReportRouter -->|PDF stream| Client
+    AnalyzeRouter --> DB
+    History --> HistoryRouter
+    HistoryRouter --> DB
+    Login --> AuthRouter
 ```
 
 ---
 
-## 💻 Tech Stack
+## ML Models
 
-**Frontend:** React 19, Vite 8, Tailwind CSS v4, Context API  
-**Backend:** FastAPI, Uvicorn, SQLAlchemy, SQLite, ReportLab  
-**AI / ML Ecosystem:** Hugging Face Models (`onnx`, `keras`, `pytorch`), Groq SDK (Llama 3.3 70B)
+Each organ type is handled by a dedicated pretrained model sourced from Hugging Face:
 
----
+| Organ | Model | Framework | Classes | How Risk Is Calculated |
+|:------|:------|:----------|:--------|:-----------------------|
+| **Brain** | `jawadskript/brain_tumor_detection` | Keras (TensorFlow) | Glioma, Meningioma, **No Tumor**, Pituitary | `1.0 − P(no_tumor)` |
+| **Lung** | `dorsar/lung-cancer-detection` | ONNX Runtime | Adenocarcinoma, Large Cell, **Normal**, Squamous | `1.0 − P(normal)` |
+| **Breast** | `ianpan/mammoscreen` | PyTorch | Multi-class BIRADS | `max(malignant probabilities)` |
 
-## ⚙️ Quick Start (Local Setup)
-
-Want to run OncoDetect on your own machine? It's super easy!
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/vishva2410/ONCO-DETECT-.git
-   cd ONCO-DETECT-
-   ```
-
-2. **Start the application:**
-   If you're on a Mac or Linux, simply run our setup script!
-   ```bash
-   ./start.sh
-   ```
-   *This single command automatically builds the Python virtual environment, installs all pip and npm dependencies, and boots up both servers!*
-
-3. **Enjoy!**
-   - **Frontend:** `http://localhost:5173`
-   - **Backend API:** `http://localhost:8000/docs`
-   
-   *(Use `admin` / `password123` to log into the demo portal)*
-
-> **Note on API Keys:** The backend logic requires a free [Groq API Key](https://console.groq.com/) for the LLM reasoning to work perfectly. Place it in `backend/.env` as `GROQ_API_KEY=your_key_here`. 
+> The **Vision Router** (`backend/reasoning/vision_router.py`) handles automatic model selection, image preprocessing, and probability extraction based on the organ type submitted in the intake form.
 
 ---
 
-## 🌍 Deployment
+## LLM Reasoning Pipeline
 
-OncoDetect is fully ready for deployment on **Render.com**. 
-A `render.yaml` infrastructure-as-code file is included in the root directory. 
+After the vision model produces a probability score, the backend passes it — along with the patient's age, gender, and clinical notes — into a two-stage LLM pipeline powered by **Llama 3.3 70B** via the Groq API:
 
-To deploy:
-1. Connect your Github Repo to Render via the "New Blueprint" button.
-2. Render will automatically spin up the static frontend site and the FastAPI Python web service seamlessly!
+```mermaid
+flowchart LR
+    A["Probability Score + Patient Context"] --> B["Pass 1: Clinical Reasoner"]
+    B --> C["Draft Report"]
+    C --> D["Pass 2: Self-Auditor"]
+    D --> E["Verified Report + Audit Flags"]
+```
+
+**Pass 1 — Clinical Reasoner:** Generates a structured JSON report containing:
+- Risk summary and triage level (Low / Medium / High)
+- Doctor-facing clinical explanation
+- Patient-friendly plain-language summary
+- Differential diagnosis hints
+- Recommended next steps
+
+**Pass 2 — Self-Auditor:** Reviews the draft report and flags anything that could be:
+- Medically dangerous or misleading
+- Inconsistent with the probability score
+- Missing critical safety disclaimers
+
+If no Groq API key is configured, the system gracefully falls back to a deterministic template-based report so the app still works end-to-end.
 
 ---
 
-<p align="center">
-  <i>Built with ❤️ for the future of AI in Healthcare.</i>
-</p>
+## Features
+
+| Category | Details |
+|:---------|:--------|
+| **Authentication** | Demo login gate with token-based protected routes |
+| **Clinical Intake** | Multi-step wizard: demographics → organ selection → scan upload |
+| **Live Analysis** | Real-time scanning animation with typing terminal, pipeline progress tracker, and resource telemetry |
+| **Reporting** | Structured clinical report with triage badge, reasoning trace, doctor & patient explanations |
+| **PDF Export** | Server-side PDF generation via ReportLab with proper list alignment and professional formatting |
+| **Case History** | All past analyses are saved to SQLite and browsable from the dashboard |
+| **Responsive Design** | Flexbox-based layout with glassmorphism, neon accents, and dark mode throughout |
+
+---
+
+## Project Structure
+
+```
+OncoDetect/
+├── backend/
+│   ├── main.py                  # FastAPI application entry point
+│   ├── database.py              # SQLAlchemy engine & session
+│   ├── models/
+│   │   └── schemas.py           # Pydantic models & SQLAlchemy ORM
+│   ├── reasoning/
+│   │   ├── vision_router.py     # Multi-framework ML inference
+│   │   ├── clinical_reasoner.py # LLM report generation (Groq)
+│   │   └── self_auditor.py      # LLM safety audit pass
+│   ├── routers/
+│   │   ├── auth.py              # Login & token management
+│   │   ├── cases.py             # /api/analyze endpoint
+│   │   ├── history.py           # /api/reports endpoints
+│   │   └── report.py            # /api/report/generate (PDF)
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── pages/               # Entrance, SignIn, Dashboard, NewAnalysis, Analysis, Report
+│   │   ├── components/          # Navbar, AppLayout, Toast, ErrorBoundary
+│   │   ├── context/             # PatientContext (global state)
+│   │   └── lib/                 # Axios API client
+│   ├── index.html
+│   └── vite.config.js
+├── render.yaml                  # Render.com deployment blueprint
+├── start.sh                     # One-command local dev server
+└── README.md
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 20+
+- A free [Groq API Key](https://console.groq.com/) *(optional but recommended)*
+
+### Run Locally
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/vishva2410/ONCO-DETECT-.git
+cd ONCO-DETECT-
+
+# 2. (Optional) Add your Groq key
+echo "GROQ_API_KEY=your_key_here" > backend/.env
+
+# 3. Start everything
+chmod +x start.sh && ./start.sh
+```
+
+The startup script handles virtual environment creation, dependency installation, and launches both servers automatically.
+
+| Service  | URL |
+|:---------|:----|
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:8000 |
+| API Docs | http://localhost:8000/docs |
+
+**Demo credentials:** `admin` / `password123`
+
+---
+
+## API Reference
+
+| Method | Endpoint | Description |
+|:-------|:---------|:------------|
+| `POST` | `/api/auth/login` | Authenticate and receive a bearer token |
+| `POST` | `/api/analyze` | Submit patient data + scan for full pipeline analysis |
+| `GET`  | `/api/reports` | Retrieve all saved case reports |
+| `GET`  | `/api/reports/{id}` | Retrieve a specific report by ID |
+| `POST` | `/api/report/generate` | Generate and download a PDF report |
+
+---
+
+## Deployment (Render)
+
+This repository includes a `render.yaml` blueprint that configures:
+- **Backend:** FastAPI web service (Python 3.11)
+- **Frontend:** Vite static site with SPA rewrite rules
+
+To deploy, connect this GitHub repository to [Render.com](https://render.com) via the **New Blueprint** option. Set the `GROQ_API_KEY` environment variable in the backend service settings.
+
+---
+
+## License
+
+This project is open for portfolio, educational, and academic use.
