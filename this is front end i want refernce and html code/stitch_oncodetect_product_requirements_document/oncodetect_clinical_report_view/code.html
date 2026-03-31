@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OncoDetect | Clinical Report View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#002113",
+                        "on-surface": "#e5e1e4",
+                        "background": "#131315",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-error": "#690005",
+                        "outline": "#8b90a0",
+                        "surface-container-low": "#1c1b1d",
+                        "surface-tint": "#aec6ff",
+                        "surface-container": "#201f21",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "secondary-container": "#00a572",
+                        "on-primary-fixed": "#001a43",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-bright": "#39393b",
+                        "surface-container-highest": "#353437",
+                        "on-primary": "#002e6b",
+                        "primary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-dim": "#131315",
+                        "on-primary-fixed-variant": "#004397",
+                        "tertiary": "#ffb95f",
+                        "outline-variant": "#414754",
+                        "primary-container": "#0070f3",
+                        "inverse-primary": "#0059c5",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#c1c6d7",
+                        "on-secondary-container": "#00311f",
+                        "surface-container-high": "#2a2a2c",
+                        "secondary": "#4edea3",
+                        "on-primary-container": "#ffffff",
+                        "on-tertiary-container": "#ffffff",
+                        "error-container": "#93000a",
+                        "primary": "#aec6ff",
+                        "tertiary-container": "#a66900",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-variant": "#353437",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-tertiary-fixed": "#2a1700",
+                        "inverse-surface": "#e5e1e4",
+                        "inverse-on-surface": "#313032",
+                        "primary-fixed-dim": "#aec6ff",
+                        "on-background": "#e5e1e4",
+                        "surface": "#131315",
+                        "on-tertiary": "#472a00",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#003824"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(28, 27, 29, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .logic-strip-safe { border-left: 2px solid #4edea3; }
+        .logic-strip-caution { border-left: 2px solid #ffb95f; }
+        .logic-strip-action { border-left: 2px solid #0070f3; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #131315; }
+        ::-webkit-scrollbar-thumb { background: #353437; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#131315]/80 backdrop-blur-xl border-b border-[#0070f3]/10 shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex justify-between items-center h-16 px-6">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#e5e1e4] font-headline">OncoDetect</span>
+<div class="hidden md:flex gap-6 items-center h-full">
+<a class="text-[#e5e1e4]/60 hover:text-[#e5e1e4] font-headline font-bold tracking-tight transition-colors duration-300" href="#">Dashboard</a>
+<a class="text-[#e5e1e4]/60 hover:text-[#e5e1e4] font-headline font-bold tracking-tight transition-colors duration-300" href="#">Patient Registry</a>
+<a class="text-[#e5e1e4]/60 hover:text-[#e5e1e4] font-headline font-bold tracking-tight transition-colors duration-300" href="#">Live Analysis</a>
+<a class="text-[#0070f3] border-b-2 border-[#0070f3] pb-1 font-headline font-bold tracking-tight" href="#">Archive</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#2a2a2c]/50 transition-colors duration-300 rounded-lg">
+<span class="material-symbols-outlined text-[#e5e1e4]/60">settings</span>
+</button>
+<button class="p-2 hover:bg-[#2a2a2c]/50 transition-colors duration-300 rounded-lg relative">
+<span class="material-symbols-outlined text-[#e5e1e4]/60">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold font-headline text-on-surface">Dr. Aris</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Oncology Lead</p>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">account_circle</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-24 pb-12 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Sidebar Navigation (Contextual for Report) -->
+<aside class="lg:col-span-3 space-y-6">
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 space-y-6">
+<div class="space-y-1">
+<h3 class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold">Patient ID</h3>
+<p class="font-headline text-lg font-bold text-primary">OD-992-XRAY</p>
+</div>
+<div class="space-y-1">
+<h3 class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold">Analysis Date</h3>
+<p class="text-sm font-medium">Oct 24, 2023 | 14:32 GMT</p>
+</div>
+<div class="pt-4 border-t border-outline-variant/10">
+<button class="w-full bg-primary-container text-on-primary-container py-3 px-4 rounded-lg font-headline font-bold flex items-center justify-center gap-2 hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                        Export to PDF
+                    </button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="p-4 bg-surface-container-high border-b border-outline-variant/10">
+<h3 class="text-xs font-bold font-headline">Diagnostic History</h3>
+</div>
+<div class="p-2 space-y-1">
+<button class="w-full text-left p-3 rounded-md hover:bg-surface-container-highest transition-colors flex items-center justify-between group">
+<span class="text-xs text-on-surface-variant group-hover:text-on-surface">Initial Scan</span>
+<span class="text-[10px] text-secondary font-mono">0.12% Prob.</span>
+</button>
+<button class="w-full text-left p-3 rounded-md bg-[#0070f3]/10 border-l-2 border-[#0070f3] flex items-center justify-between">
+<span class="text-xs text-primary font-bold">Current Analysis</span>
+<span class="text-[10px] text-tertiary font-mono">14.2% Prob.</span>
+</button>
+<button class="w-full text-left p-3 rounded-md hover:bg-surface-container-highest transition-colors flex items-center justify-between group">
+<span class="text-xs text-on-surface-variant group-hover:text-on-surface">Secondary Review</span>
+<span class="text-[10px] text-on-surface-variant font-mono">Pending</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Report Canvas -->
+<div class="lg:col-span-9 space-y-8">
+<!-- Header & Risk Badge -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-outline-variant/10">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+<h1 class="text-3xl font-headline font-bold tracking-tight">Clinical Diagnostic Report</h1>
+</div>
+<p class="text-on-surface-variant text-sm max-w-md">Comprehensive telemetry analysis of squamous cell carcinoma markers using neural-network tomography.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Risk Assessment</p>
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-tertiary/10 border border-tertiary/30 rounded-full">
+<span class="w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+<span class="text-tertiary font-headline font-bold text-sm tracking-wide">MODERATE RISK</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Probability Score Bento Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Large Probability Chart -->
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/5 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+<div class="relative z-10">
+<h3 class="text-xs font-bold font-headline text-on-surface-variant tracking-widest uppercase mb-8">Detection Probability Score</h3>
+<div class="flex items-baseline gap-4 mb-2">
+<span class="text-7xl font-headline font-extrabold text-primary tracking-tighter">14.2<span class="text-2xl font-light text-primary/60">%</span></span>
+<div class="flex flex-col">
+<span class="text-secondary text-sm flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                    +2.4%
+                                </span>
+<span class="text-[10px] text-on-surface-variant">vs. baseline</span>
+</div>
+</div>
+<!-- Visualization: Probability Bar -->
+<div class="mt-8 space-y-4">
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="h-full bg-secondary" style="width: 10%"></div>
+<div class="h-full bg-tertiary" style="width: 25%"></div>
+<div class="h-full bg-error" style="width: 65%"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-bold font-headline text-on-surface-variant/60 uppercase tracking-widest">
+<span>Low Risk (0-10%)</span>
+<span>Moderate (11-35%)</span>
+<span>High (36%+)</span>
+</div>
+</div>
+</div>
+<!-- Confidence Bands Sub-grid -->
+<div class="mt-12 grid grid-cols-2 gap-4 relative z-10">
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/10 logic-strip-action">
+<p class="text-[10px] text-on-surface-variant uppercase mb-1">Confidence Band</p>
+<p class="text-lg font-headline font-bold">98.4% <span class="text-xs font-normal text-on-surface-variant">Acc.</span></p>
+</div>
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/10 logic-strip-safe">
+<p class="text-[10px] text-on-surface-variant uppercase mb-1">Standard Deviation</p>
+<p class="text-lg font-headline font-bold">±0.02</p>
+</div>
+</div>
+</div>
+<!-- Auxiliary Data Card -->
+<div class="bg-surface-container-high p-6 rounded-xl border border-outline-variant/10 flex flex-col gap-6">
+<div>
+<h3 class="text-xs font-bold font-headline text-on-surface-variant tracking-widest uppercase mb-4">Metric Density</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/5 pb-2">
+<span class="text-xs text-on-surface-variant">Voxel Variance</span>
+<span class="text-sm font-mono font-bold text-secondary">0.442</span>
+</div>
+<div class="flex justify-between items-end border-b border-outline-variant/5 pb-2">
+<span class="text-xs text-on-surface-variant">Thermal Signal</span>
+<span class="text-sm font-mono font-bold text-tertiary">37.2°C</span>
+</div>
+<div class="flex justify-between items-end border-b border-outline-variant/5 pb-2">
+<span class="text-xs text-on-surface-variant">Morphology Index</span>
+<span class="text-sm font-mono font-bold text-primary">0.89</span>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<img class="w-full h-32 object-cover rounded-lg grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500" data-alt="Abstract medical imaging visualization showing neural pathways and data points in deep blue and glowing cyan neon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgjjCzUXvRzZSs3UdL2eq2ohF4wxBGd0sh-5EY_XJR12w3zP7YdZ3-Ge8V58uDcUVBQQ6YDEDUoNDWwuL8CP7m2OPTfgWE05SHflXS7xREzoYs2fwbQkXJqS1a8iwZN4hdvENbhkgW4oM6_knLbsO3b7Bnx3hPKEkMS3Vh53vklNhj8jdcZTMMFgqSep-Pp9iy-njQuIT0iuaU5MfPL2dpPkSKyJNtMUwVL5cB1eBONFpn1BukBbUFRoQJP3fxAKGxUi9pbxs65NY"/>
+</div>
+</div>
+</section>
+<!-- Explanation Content -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Doctor Explanation -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-xl">biotech</span>
+<h2 class="text-sm font-bold font-headline uppercase tracking-widest">Clinical Technical Summary</h2>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 leading-relaxed text-sm text-on-surface/90 font-light space-y-4">
+<p>
+                            Analysis of the submitted tomography shows a <strong class="text-primary">localized increase in metabolic activity</strong> (Standardized Uptake Value of 3.2) within the left temporal region. While morphological features remain within typical limits, the neural network flagged 14 distinct pixel-clusters exhibiting early-stage dysplasia characteristics.
+                        </p>
+<p>
+                            The <strong class="text-primary">Confidence Band of 98.4%</strong> suggests high reliability in this detection. Differential diagnosis should prioritize monitoring for secondary biomarkers. No immediate surgical intervention is suggested based on current data, but a follow-up PET scan in 30 days is advised.
+                        </p>
+<ul class="list-disc list-inside space-y-2 text-xs text-on-surface-variant marker:text-primary">
+<li>Check for CD44/CD133 expression levels.</li>
+<li>Correlate with latest serum LDH results.</li>
+<li>Observe localized lymph node symmetry.</li>
+</ul>
+</div>
+</div>
+<!-- Patient Explanation -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl">forum</span>
+<h2 class="text-sm font-bold font-headline uppercase tracking-widest">Patient-Friendly Overview</h2>
+</div>
+<div class="bg-surface-container-highest p-6 rounded-xl border border-outline-variant/20 leading-relaxed text-sm text-on-surface/90 space-y-4 italic shadow-inner">
+<p class="font-medium text-on-surface">
+                            "The system found some very small changes that we need to keep an eye on. While your overall risk level is 'Moderate', this doesn't mean anything is wrong right now."
+                        </p>
+<p>
+                            Think of this report as an early warning system. We've caught a few subtle signals that weren't there before. Your current score is 14.2%—this is like seeing a few clouds in the sky; it might rain, but it's not a storm yet.
+                        </p>
+<div class="bg-surface-container-low p-4 rounded-lg not-italic">
+<h4 class="text-xs font-bold text-secondary mb-2 uppercase tracking-tight">Next Steps for You:</h4>
+<div class="grid grid-cols-2 gap-4 text-[11px]">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-xs mt-0.5">check_circle</span>
+                                    Maintain current medication.
+                                </div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-xs mt-0.5">calendar_month</span>
+                                    Return in 4 weeks for a check-up.
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Action Footer -->
+<footer class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-outline-variant/10">
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Report Validity: 72 Hours</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">System Build: v4.2.0-Alpha</span>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2 rounded-lg text-xs font-bold font-headline border border-outline-variant/20 hover:bg-surface-container-highest transition-colors">
+                        Archive Report
+                    </button>
+<button class="px-6 py-2 rounded-lg text-xs font-bold font-headline bg-primary-container text-on-primary-container hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span>
+                        Share with Specialist
+                    </button>
+</div>
+</footer>
+</div>
+</main>
+<!-- SideNavBar (Mobile Bottom Navigation) -->
+<div class="md:hidden fixed bottom-0 w-full bg-[#1c1b1d] border-t border-outline-variant/10 px-6 py-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-[#e5e1e4]/40">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px]">Overview</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#e5e1e4]/40">
+<span class="material-symbols-outlined">biotech</span>
+<span class="text-[10px]">Scanning</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#aec6ff]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="text-[10px]">Report</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#e5e1e4]/40">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="text-[10px]">Data</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#e5e1e4]/40">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Settings</span>
+</button>
+</div>
+</body></html>

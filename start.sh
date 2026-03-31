@@ -10,7 +10,7 @@ echo "\n\033[1;32m>>> OncoDetect: Starting services...\033[0m\n"
 
 # ── Backend ─────────────────────────────────────────
 echo "\033[0;36m[1/2] Starting FastAPI backend on :8000...\033[0m"
-cd "$(dirname "$0")/oncodetect/backend"
+cd "$(dirname "$0")/backend"
 
 if [ ! -d ".venv" ]; then
   echo "  Creating virtual environment..."
@@ -26,8 +26,8 @@ echo "  Backend PID: $BACKEND_PID"
 
 # ── Frontend ─────────────────────────────────────────
 echo "\033[0;36m[2/2] Starting Vite frontend on :5173...\033[0m"
-cd "$(dirname "$0")/oncodetect/frontend"
-npm install -q
+cd "../frontend"
+npm install --no-audit --no-fund --legacy-peer-deps -q
 npm run dev &
 FRONTEND_PID=$!
 echo "  Frontend PID: $FRONTEND_PID"

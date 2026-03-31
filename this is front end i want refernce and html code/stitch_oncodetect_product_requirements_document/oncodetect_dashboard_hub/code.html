@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#002113",
+              "on-surface": "#e5e1e4",
+              "background": "#131315",
+              "secondary-fixed": "#6ffbbe",
+              "on-error": "#690005",
+              "outline": "#8b90a0",
+              "surface-container-low": "#1c1b1d",
+              "surface-tint": "#aec6ff",
+              "surface-container": "#201f21",
+              "on-tertiary-fixed-variant": "#653e00",
+              "secondary-container": "#00a572",
+              "on-primary-fixed": "#001a43",
+              "secondary-fixed-dim": "#4edea3",
+              "surface-bright": "#39393b",
+              "surface-container-highest": "#353437",
+              "on-primary": "#002e6b",
+              "primary-fixed": "#d8e2ff",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-secondary-fixed-variant": "#005236",
+              "surface-dim": "#131315",
+              "on-primary-fixed-variant": "#004397",
+              "tertiary": "#ffb95f",
+              "outline-variant": "#414754",
+              "primary-container": "#0070f3",
+              "inverse-primary": "#0059c5",
+              "error": "#ffb4ab",
+              "on-surface-variant": "#c1c6d7",
+              "on-secondary-container": "#00311f",
+              "surface-container-high": "#2a2a2c",
+              "secondary": "#4edea3",
+              "on-primary-container": "#ffffff",
+              "on-tertiary-container": "#ffffff",
+              "error-container": "#93000a",
+              "primary": "#aec6ff",
+              "tertiary-container": "#a66900",
+              "tertiary-fixed": "#ffddb8",
+              "surface-variant": "#353437",
+              "surface-container-lowest": "#0e0e10",
+              "on-tertiary-fixed": "#2a1700",
+              "inverse-surface": "#e5e1e4",
+              "inverse-on-surface": "#313032",
+              "primary-fixed-dim": "#aec6ff",
+              "on-background": "#e5e1e4",
+              "surface": "#131315",
+              "on-tertiary": "#472a00",
+              "on-error-container": "#ffdad6",
+              "on-secondary": "#003824"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Space Grotesk"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(28, 27, 29, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#131315]/80 backdrop-blur-xl border-b border-[#0070f3]/10 shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex justify-between items-center h-16 px-6">
+<div class="flex items-center gap-8">
+<span class="text-xl font-headline font-bold tracking-tighter text-[#e5e1e4]">OncoDetect</span>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="font-headline font-bold tracking-tight text-[#0070f3] border-b-2 border-[#0070f3] pb-1" href="#">Dashboard</a>
+<a class="font-headline font-bold tracking-tight text-[#e5e1e4]/60 hover:text-[#e5e1e4] transition-colors duration-300" href="#">Patient Registry</a>
+<a class="font-headline font-bold tracking-tight text-[#e5e1e4]/60 hover:text-[#e5e1e4] transition-colors duration-300" href="#">Live Analysis</a>
+<a class="font-headline font-bold tracking-tight text-[#e5e1e4]/60 hover:text-[#e5e1e4] transition-colors duration-300" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#e5e1e4]/60 hover:bg-[#2a2a2c]/50 rounded transition-colors duration-300 active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-[#e5e1e4]/60 hover:bg-[#2a2a2c]/50 rounded transition-colors duration-300 active:scale-95 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="p-2 text-[#e5e1e4]/60 hover:bg-[#2a2a2c]/50 rounded transition-colors duration-300 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-[#1c1b1d] hidden md:flex flex-col py-4 gap-2 font-['Inter'] text-sm font-medium">
+<div class="px-4 py-6 mb-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden">
+<img alt="Clinician Profile" class="w-full h-full object-cover" data-alt="minimalist professional medical clinician avatar portrait with clean aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCUwxGcTwsSB8J048KY_peuPK4Tln4RWjvdIgiNFG_oZKdK-aiYSypapJxzPKgBlTI48ENxP6veQ3O5OHOtoR_FhYISK9rLGcbNw4nlGRj7poNEqQH82qeYOwXpCYTAgI_Zcm1-w8SSfcl0jL1a9Q1G8vp-fxcuXvpGKC-SwxYubJSWma4k5lJ7wSADm1vfsUi_hnae3ZMgn28szjnn2_-HX3MPFwX0xetAJFunBeVe9U3W5qQyeXPr0RMntAYj_ZFnFKCQGWKcgw"/>
+</div>
+<div>
+<p class="text-on-surface font-semibold">Dr. Aris</p>
+<p class="text-on-surface-variant text-xs">Oncology Lead</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<a class="mx-2 px-4 py-3 bg-[#0070f3]/10 text-[#aec6ff] border-l-4 border-[#0070f3] flex items-center gap-3 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="mx-2 px-4 py-3 text-[#e5e1e4]/40 hover:bg-[#2a2a2c] hover:text-[#e5e1e4] flex items-center gap-3 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">biotech</span>
+<span>Scanning</span>
+</a>
+<a class="mx-2 px-4 py-3 text-[#e5e1e4]/40 hover:bg-[#2a2a2c] hover:text-[#e5e1e4] flex items-center gap-3 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span>Telemetry</span>
+</a>
+<a class="mx-2 px-4 py-3 text-[#e5e1e4]/40 hover:bg-[#2a2a2c] hover:text-[#e5e1e4] flex items-center gap-3 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Reports</span>
+</a>
+<a class="mx-2 px-4 py-3 text-[#e5e1e4]/40 hover:bg-[#2a2a2c] hover:text-[#e5e1e4] flex items-center gap-3 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="mt-auto px-4 pb-4 flex flex-col gap-4">
+<button class="w-full py-3 bg-primary-container text-on-primary-container font-headline font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20 hover:brightness-110 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+<span>Start New Scan</span>
+</button>
+<div class="flex flex-col gap-1 border-t border-outline-variant/10 pt-4">
+<a class="px-2 py-2 text-[#e5e1e4]/40 hover:text-[#e5e1e4] flex items-center gap-3 text-xs" href="#">
+<span class="material-symbols-outlined text-secondary text-sm">check_circle</span>
+<span>System Status</span>
+</a>
+<a class="px-2 py-2 text-[#e5e1e4]/40 hover:text-[#e5e1e4] flex items-center gap-3 text-xs" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Help</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-16 md:pl-64 min-h-screen bg-surface-container-lowest">
+<div class="p-8 max-w-[1600px] mx-auto">
+<!-- Dashboard Header -->
+<header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<p class="text-primary font-label text-xs tracking-[0.2em] uppercase mb-2">Clinical Observatory</p>
+<h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">System Overview</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="px-4 py-2 bg-surface-container rounded-lg border border-outline-variant/10 flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4edea3]"></div>
+<span class="text-xs font-label text-on-surface-variant uppercase tracking-wider">AI Inference Engine: Online</span>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Primary Action & Status Bento -->
+<div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Scanner Status Module -->
+<div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="text-xs font-label text-on-surface-variant uppercase tracking-widest">Scanner Cluster 01</span>
+<span class="material-symbols-outlined text-on-surface-variant">biotech</span>
+</div>
+<div class="mb-6">
+<p class="text-4xl font-headline font-bold text-on-surface mb-1">98.4<span class="text-primary text-xl">%</span></p>
+<p class="text-xs text-on-surface-variant font-body">Availability Index (Last 24h)</p>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Current Load</span>
+<span class="text-on-surface">42%</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[42%]"></div>
+</div>
+</div>
+</div>
+<!-- System Telemetry Module -->
+<div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="text-xs font-label text-on-surface-variant uppercase tracking-widest">Global Telemetry</span>
+<span class="material-symbols-outlined text-on-surface-variant">query_stats</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div>
+<p class="text-2xl font-headline font-bold text-on-surface">1,204</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Scans Completed</p>
+</div>
+<div>
+<p class="text-2xl font-headline font-bold text-on-surface">12ms</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Latency</p>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold px-2 py-0.5 bg-primary-container/20 text-primary rounded">OPTIMAL</span>
+<span class="text-[10px] text-on-surface-variant">Next recalibration in 4.2h</span>
+</div>
+</div>
+</div>
+<!-- Large Analysis Call-to-Action -->
+<div class="md:col-span-2 bg-gradient-to-br from-primary-container to-[#0059c5] rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">magnification_small</span>
+</div>
+<div class="relative z-10 max-w-md">
+<h2 class="text-3xl font-headline font-bold text-white mb-4 leading-tight">Initiate Advanced Oncology Analysis</h2>
+<p class="text-primary-fixed/80 text-sm mb-6">Deploy high-fidelity AI models for multi-spectral organ scan triage. Precision detection with 99.8% resolution accuracy.</p>
+<button class="px-8 py-3 bg-white text-[#001a43] font-headline font-extrabold rounded-lg flex items-center gap-3 hover:bg-primary-fixed transition-colors active:scale-95 shadow-2xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                Start New Analysis
+                            </button>
+</div>
+<div class="relative z-10 hidden lg:block bg-[#131315]/30 backdrop-blur-md rounded-xl p-4 border border-white/10">
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs text-white/80 font-label">Trained on 5M+ clinical images</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs text-white/80 font-label">Real-time collaboration active</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs text-white/80 font-label">FDA Class II Certified Engine</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Triage List Bento -->
+<div class="md:col-span-4 bg-surface-container-low rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline font-bold text-on-surface">Recent Triage</h3>
+<span class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest bg-surface-container-highest px-2 py-1 rounded">Live Updates</span>
+</div>
+<div class="space-y-4 flex-1">
+<!-- Patient Card 01 -->
+<div class="p-4 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<p class="text-xs font-label text-on-surface-variant mb-1">PATIENT ID</p>
+<p class="font-headline font-bold text-on-surface">#OD-8821-X</p>
+</div>
+<div class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase">High Risk</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">pulmonology</span>
+<span class="text-xs text-on-surface">Organ: Pulmonary</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full overflow-hidden mt-2">
+<div class="h-full bg-error w-[88%]"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-headline font-bold text-error">88%</span>
+</div>
+</div>
+</div>
+<!-- Patient Card 02 -->
+<div class="p-4 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<p class="text-xs font-label text-on-surface-variant mb-1">PATIENT ID</p>
+<p class="font-headline font-bold text-on-surface">#OD-9044-B</p>
+</div>
+<div class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase">Stable</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">neurology</span>
+<span class="text-xs text-on-surface">Organ: Cerebral</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full overflow-hidden mt-2">
+<div class="h-full bg-secondary w-[12%]"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-headline font-bold text-secondary">12%</span>
+</div>
+</div>
+</div>
+<!-- Patient Card 03 -->
+<div class="p-4 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div>
+<p class="text-xs font-label text-on-surface-variant mb-1">PATIENT ID</p>
+<p class="font-headline font-bold text-on-surface">#OD-7712-M</p>
+</div>
+<div class="px-2 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded uppercase">Monitor</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">nephrology</span>
+<span class="text-xs text-on-surface">Organ: Renal</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full overflow-hidden mt-2">
+<div class="h-full bg-tertiary w-[45%]"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-headline font-bold text-tertiary">45%</span>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-6 w-full py-3 border border-outline-variant/20 text-on-surface-variant text-sm font-label uppercase tracking-widest hover:bg-surface-container-highest transition-colors">
+                        View Full Registry
+                    </button>
+</div>
+<!-- Secondary Intelligence Modules -->
+<div class="md:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6 mt-2">
+<div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2">dns</span>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-wider">Node Availability</p>
+<p class="text-xl font-headline font-bold mt-1">12/12 Online</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-secondary mb-2">memory</span>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-wider">GPU Inference</p>
+<p class="text-xl font-headline font-bold mt-1">4.2 TFLOPS</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-tertiary mb-2">update</span>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-wider">Last Sync</p>
+<p class="text-xl font-headline font-bold mt-1">0.4s ago</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-outline mb-2">security</span>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-wider">HIPAA Status</p>
+<p class="text-xl font-headline font-bold mt-1 text-secondary">Verified</p>
+</div>
+</div>
+</div>
+<!-- Footer Details -->
+<footer class="mt-16 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-6">
+<p class="text-[10px] text-on-surface-variant uppercase tracking-[0.2em]">© 2024 OncoDetect Systems Int.</p>
+<div class="flex gap-4">
+<a class="text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#">Compliance</a>
+<a class="text-[10px] text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-high px-4 py-1.5 rounded-full">
+<div class="w-1.5 h-1.5 bg-secondary rounded-full"></div>
+<span class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest">Environment: Production CL-04</span>
+</div>
+</footer>
+</div>
+</main>
+<!-- FAB for quick access (suppressed on certain views but here for dashboard) -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-primary-container text-on-primary-container rounded-lg shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</div>
+</body></html>

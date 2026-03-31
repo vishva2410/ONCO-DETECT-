@@ -1,322 +1,234 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePatient } from '../context/usePatient';
 import Navbar from '../components/Navbar';
-import DisclaimerBanner from '../components/DisclaimerBanner';
-import { UploadCloud, FileType, CheckCircle2, User, Activity, AlertCircle, ArrowRight } from 'lucide-react';
-import { usePageTransition } from '../hooks/usePageTransition';
 
-const organTypes = [
-  { id: 'brain', label: 'Brain MRI', desc: 'Detect masses, lesions, and hemorrhage', icon: '🧠' },
-  { id: 'lung', label: 'Lung X-Ray', desc: 'Identify nodules, opacities, and effusion', icon: '🫁' },
-  { id: 'breast', label: 'Breast Mammo', desc: 'Screen for microcalcifications and mass', icon: '🎗️' },
+const ORGAN_OPTIONS = [
+  { key: 'brain', label: 'Brain', icon: 'psychology', color: 'primary', desc: 'Neuro-oncology, glioblastoma screening, and cortical mapping.' },
+  { key: 'lung', label: 'Lung', icon: 'pulmonology', color: 'secondary', desc: 'Pulmonary analysis, nodule tracking, and pleural assessment.' },
+  { key: 'breast', label: 'Breast', icon: 'female', color: 'tertiary', desc: 'Mammographic telemetry, densitometry, and calcification analysis.' },
 ];
 
 export default function NewAnalysis() {
   const navigate = useNavigate();
-  const { patientData, scanPreviewUrl, updatePatientData, setScanFile, setScanPreviewUrl, addToast } = usePatient();
-  const fileInputRef = useRef(null);
-  const objectUrlRef = useRef('');
-  const isVisible = usePageTransition(10);
-  const initialFormData = {
-    name: patientData.name || '',
-    age: patientData.age || '',
-    gender: patientData.gender || '',
-    symptoms: patientData.symptoms || '',
-    smokingHistory: Boolean(patientData.smokingHistory),
-    familyHistory: Boolean(patientData.familyHistory),
-  };
+  const { setPatientData, setScanFile, setScanPreviewUrl, addToast } = usePatient();
+  const fileRef = useRef(null);
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [selectedOrgan, setSelectedOrgan] = useState(patientData.organType || '');
-  const [localFile, setLocalFile] = useState(null);
-  const [localPreview, setLocalPreview] = useState(scanPreviewUrl || '');
+  const [form, setForm] = useState({
+    name: '', age: '', gender: '', organType: '', symptoms: '',
+  });
+  const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
 
-  useEffect(() => () => {
-    if (objectUrlRef.current?.startsWith('blob:')) {
-      URL.revokeObjectURL(objectUrlRef.current);
-    }
-  }, []);
+  const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const wizardSteps = [
+    { icon: 'person_add', label: 'Demographics', status: 'Active', active: true },
+    { icon: 'history_edu', label: 'Medical History', status: 'Pending', active: false },
+    { icon: 'biotech', label: 'Scan Configuration', status: 'Pending', active: false },
+    { icon: 'cloud_upload', label: 'Data Upload', status: 'Pending', active: false },
+  ];
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files?.[0]) {
+      const f = e.dataTransfer.files[0];
+      setFile(f);
+      setScanPreviewUrl(URL.createObjectURL(f));
+    }
   };
 
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+    if (e.target.files?.[0]) {
+      const f = e.target.files[0];
+      setFile(f);
+      setScanPreviewUrl(URL.createObjectURL(f));
     }
-  };
-
-  const handleFile = (file) => {
-    if (!file.type.startsWith('image/')) {
-      addToast('Please upload a valid image file (JPEG, PNG, DICOM).', 'error');
-      return;
-    }
-    if (objectUrlRef.current?.startsWith('blob:')) {
-      URL.revokeObjectURL(objectUrlRef.current);
-    }
-    const previewUrl = URL.createObjectURL(file);
-    objectUrlRef.current = previewUrl;
-    setLocalFile(file);
-    setLocalPreview(previewUrl);
-    addToast('Scan image uploaded successfully', 'success');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.age) {
-      addToast('Please fill out the patient name and age.', 'warning');
+    if (!form.name || !form.age || !form.organType || !file) {
+      addToast('All fields and a scan are required.', 'error');
       return;
     }
-    if (!selectedOrgan) {
-      addToast('Please select an organ type.', 'warning');
-      return;
-    }
-    if (!localFile) {
-      addToast('Please upload a scan image before proceeding.', 'warning');
-      return;
-    }
-
-    // Save to context
-    updatePatientData({ ...formData, organType: selectedOrgan });
-    setScanFile(localFile);
-    setScanPreviewUrl(localPreview);
-
-    // Proceed to analysis
+    setPatientData({ ...form });
+    setScanFile(file);
+    // scanPreviewUrl is already set synchronously on file select
     navigate('/analysis');
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#050505]">
+    <div className="h-screen flex flex-col bg-surface-container-lowest text-on-surface overflow-hidden">
       <Navbar />
 
-      <main 
-        className="flex-1 px-8 md:px-12 pt-32 pb-24 max-w-[1200px] mx-auto w-full transition-all duration-700"
-        style={{ 
-          opacity: isVisible ? 1 : 0, 
-          transform: isVisible ? 'translateY(0)' : 'translateY(24px)' 
-        }}
-      >
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-4">
-             <div className="w-1.5 h-1.5 bg-[#00D4A8]" />
-             <span className="text-xs sm:text-sm font-bold tracking-[0.18em] text-[#00D4A8] uppercase">Analysis Intake</span>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar Progress */}
+        <aside className="w-64 h-full flex flex-col py-8 px-6 bg-surface-container-low border-r border-outline-variant/10 shrink-0 hidden md:flex">
+          <div className="flex flex-col gap-1 mb-12">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold font-headline">Registration Stage</span>
+            <h1 className="text-2xl font-bold text-on-surface font-headline">Intake Wizard</h1>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.14em] text-[#FAFAFA] mb-4 uppercase">New Clinical Case</h1>
-          <p className="text-base text-[#7A8DA8] tracking-[0.12em] uppercase max-w-2xl leading-relaxed">Initialize the diagnostic pipeline by providing patient data and medical imaging scans.</p>
-        </div>
+          <nav className="flex flex-col gap-4">
+            {wizardSteps.map((s, i) => (
+              <div key={i} className={`p-3 flex items-center gap-4 transition-all duration-300 rounded-lg ${s.active ? 'bg-surface-container shadow-lg border-l-4 border-primary' : 'opacity-40'}`}>
+                <span className={`material-symbols-outlined ${s.active ? 'text-primary' : 'text-on-surface-variant'}`} style={s.active ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                  {s.icon}
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-on-surface uppercase tracking-wider">{s.label}</p>
+                  <p className="text-[10px] text-on-surface-variant font-bold uppercase">{s.status}</p>
+                </div>
+              </div>
+            ))}
+          </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          
-          {/* Patient Form */}
-          <section className="glass-card p-10 relative overflow-hidden">
-            <div className="flex items-center gap-4 mb-10 pb-6 border-b border-[rgba(255,255,255,0.05)]">
-              <User size={18} className="text-[#00D4A8]" />
-              <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Patient Profile</h2>
+          <div className="mt-auto p-5 bg-surface-container rounded-xl border border-outline-variant/10">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="material-symbols-outlined text-secondary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-secondary font-headline">HIPAA COMPLIANT</span>
             </div>
-            
-            <form className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="JOHN DOE"
-                    className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-sm text-[#FAFAFA] transition-all focus:border-[#00D4A8] outline-none rounded-none tracking-widest focus:bg-[rgba(0,212,168,0.02)]"
-                  />
+            <p className="text-[11px] text-on-surface-variant leading-relaxed font-medium">All data is encrypted using AES-256 protocols. Your session is monitored by clinical oversight.</p>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-12 relative">
+          <div className="data-grid-overlay absolute inset-0 opacity-10 pointer-events-none"></div>
+          <div className="max-w-4xl mx-auto relative z-10">
+            <div className="glass-panel border border-outline-variant/10 rounded-2xl overflow-hidden shadow-2xl">
+              {/* Form Header */}
+              <div className="p-8 border-b border-outline-variant/10 bg-surface-container-low/50 flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-on-surface font-headline uppercase tracking-tight">Step 1: Patient Demographics</h2>
+                  <p className="text-sm text-on-surface-variant mt-1 font-medium">Capture foundational biometric and identification data.</p>
                 </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Age</label>
-                    <input
-                      type="number"
-                      name="age"
-                      value={formData.age}
-                      onChange={handleInputChange}
-                      placeholder="45"
-                      className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-sm text-[#FAFAFA] transition-all focus:border-[#00D4A8] outline-none rounded-none tracking-widest focus:bg-[rgba(0,212,168,0.02)]"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Gender</label>
-                    <select
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                      className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-sm text-[#666] tracking-[0.12em] transition-all focus:border-[#00D4A8] focus:text-[#FAFAFA] outline-none rounded-none appearance-none focus:bg-[rgba(0,212,168,0.02)]"
-                    >
-                      <option value="">SELECT</option>
-                      <option value="Male">MALE</option>
-                      <option value="Female">FEMALE</option>
-                      <option value="Other">OTHER</option>
-                    </select>
-                  </div>
-                </div>
+                <span className="text-5xl font-black text-primary/10 font-headline">01</span>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-xs font-black text-[#555] uppercase tracking-[0.14em]">Clinical Presentation</label>
-                <textarea
-                  name="symptoms"
-                  value={formData.symptoms}
-                  onChange={handleInputChange}
-                  placeholder="OBSERVED SYMPTOMS AND MEDICAL OBSERVATIONS..."
-                  rows="5"
-                  className="w-full px-6 py-5 bg-[rgba(255,255,255,0.01)] border border-[rgba(255,255,255,0.05)] text-sm text-[#FAFAFA] transition-all focus:border-[#00D4A8] outline-none rounded-none resize-none tracking-widest focus:bg-[rgba(0,212,168,0.02)] leading-relaxed"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                <label className="flex items-center gap-4 cursor-pointer group p-4 border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.01)] transition-colors">
-                  <div className="relative flex items-center justify-center w-5 h-5 border border-[rgba(255,255,255,0.1)] transition group-hover:border-[#00D4A8] rounded-none">
-                    <input 
-                      type="checkbox" 
-                      name="smokingHistory"
-                      checked={formData.smokingHistory}
-                      onChange={handleInputChange}
-                      className="peer sr-only" 
-                    />
-                    <div className="absolute inset-0 bg-[#00D4A8] scale-0 transition-transform peer-checked:scale-100 flex items-center justify-center rounded-none">
-                      <CheckCircle2 size={12} className="text-[#050505]" />
+              <form onSubmit={handleSubmit} className="p-8 space-y-12">
+                {/* ID Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-8">
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant font-headline">Legal Full Name</label>
+                      <input className="recessed-input py-4 px-2 text-on-surface w-full text-lg font-bold" placeholder="Patient Name" type="text" value={form.name} onChange={e => update('name', e.target.value)} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant font-headline">Age (Years)</label>
+                      <input className="recessed-input py-4 px-2 text-on-surface w-full text-lg font-bold" placeholder="45" type="number" value={form.age} onChange={e => update('age', e.target.value)} />
                     </div>
                   </div>
-                  <span className="text-xs sm:text-sm font-bold tracking-[0.08em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Smoking History</span>
-                </label>
-                
-                <label className="flex items-center gap-4 cursor-pointer group p-4 border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.01)] transition-colors">
-                  <div className="relative flex items-center justify-center w-5 h-5 border border-[rgba(255,255,255,0.1)] transition group-hover:border-[#00D4A8] rounded-none">
-                    <input 
-                      type="checkbox" 
-                      name="familyHistory"
-                      checked={formData.familyHistory}
-                      onChange={handleInputChange}
-                      className="peer sr-only" 
-                    />
-                    <div className="absolute inset-0 bg-[#00D4A8] scale-0 transition-transform peer-checked:scale-100 flex items-center justify-center rounded-none">
-                      <CheckCircle2 size={12} className="text-[#050505]" />
+                  <div className="space-y-8">
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant font-headline">Biological Gender</label>
+                      <select className="recessed-input py-4 px-2 text-on-surface w-full bg-surface-container-lowest font-bold" value={form.gender} onChange={e => update('gender', e.target.value)}>
+                        <option value="">Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant font-headline">Clinical Notes</label>
+                      <textarea
+                        className="recessed-input py-4 px-2 text-on-surface w-full resize-none h-24 font-medium"
+                        placeholder="Clinical rationale..."
+                        value={form.symptoms}
+                        onChange={e => update('symptoms', e.target.value)}
+                      />
                     </div>
                   </div>
-                  <span className="text-xs sm:text-sm font-bold tracking-[0.08em] uppercase text-[#666] group-hover:text-[#FAFAFA] transition">Genetics History</span>
-                </label>
-              </div>
-            </form>
-          </section>
+                </div>
 
-          {/* Module & Upload Section */}
-          <div className="space-y-8">
-            <section className="glass-card p-10 bg-[rgba(0,144,255,0.01)]">
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[rgba(255,255,255,0.05)]">
-                <Activity size={18} className="text-[#0090FF]" />
-                <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Modality Selection</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {organTypes.map(organ => (
-                  <button
-                    key={organ.id}
-                    type="button"
-                    onClick={() => setSelectedOrgan(organ.id)}
-                    className={`p-6 text-center border transition-all duration-500 overflow-hidden relative group ${
-                      selectedOrgan === organ.id
-                        ? 'bg-[rgba(0,144,255,0.08)] border-[#0090FF] shadow-[0_0_30px_rgba(0,144,255,0.1)]'
-                        : 'bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.2)]'
+                {/* Organ Selection */}
+                <div className="space-y-6">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant block font-headline">Diagnostic Focus Cluster</label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {ORGAN_OPTIONS.map(o => (
+                      <button
+                        key={o.key}
+                        type="button"
+                        onClick={() => update('organType', o.key)}
+                        className={`group relative flex flex-col p-6 border rounded-xl text-left overflow-hidden transition-all duration-500 ${
+                          form.organType === o.key
+                            ? `bg-${o.color}/10 border-${o.color}/50 shadow-[0_10px_30px_rgba(0,0,0,0.4)]`
+                            : 'bg-surface-container-highest/30 border-outline-variant/10 hover:border-primary/30 hover:bg-surface-container-highest/50'
+                        }`}
+                      >
+                        <div className="absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700">
+                          <span className="material-symbols-outlined text-[140px]">{o.icon}</span>
+                        </div>
+                        <span className={`material-symbols-outlined text-${o.color} mb-6 text-3xl`}>{o.icon}</span>
+                        <h3 className="font-bold text-xl font-headline tracking-tight">{o.label}</h3>
+                        <p className="text-[11px] text-on-surface-variant mt-3 leading-relaxed font-medium uppercase tracking-wider">{o.desc}</p>
+                        {form.organType === o.key && (
+                          <div className="absolute top-4 right-4">
+                            <span className="material-symbols-outlined text-secondary animate-pulse-ring" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Upload Zone */}
+                <div className="space-y-6">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant block font-headline">DICOM / MR Imaging Assets</label>
+                  <div
+                    onDragOver={e => { e.preventDefault(); setDragActive(true); }}
+                    onDragLeave={() => setDragActive(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileRef.current?.click()}
+                    className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-20 px-6 text-center cursor-pointer group transition-all duration-500 ${
+                      dragActive
+                        ? 'border-primary bg-primary/5 shadow-inner'
+                        : file
+                          ? 'border-secondary/40 bg-secondary/5'
+                          : 'border-outline-variant/20 bg-surface-container-lowest/50 hover:bg-surface-container-low hover:border-primary/20'
                     }`}
                   >
-                    <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-500">{organ.icon}</div>
-                    <div className="text-xs font-black tracking-[0.14em] uppercase text-[#FAFAFA] leading-tight">{organ.label}</div>
-                    <div className="mt-2 text-xs text-[#7A8DA8] leading-relaxed">{organ.desc}</div>
-                    {selectedOrgan === organ.id && (
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0090FF]" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="glass-card p-10">
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[rgba(255,255,255,0.05)]">
-                <FileType size={18} className="text-[#FAFAFA]" />
-                <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">Imaging Payload</h2>
-              </div>
-
-              <div
-                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                onDragLeave={() => setDragActive(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setDragActive(false);
-                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    handleFile(e.dataTransfer.files[0]);
-                  }
-                }}
-                className={`relative border-2 border-dashed p-10 text-center transition-all duration-500 ${
-                  dragActive ? 'border-[#00D4A8] bg-[rgba(0,212,168,0.05)]' : 'border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.01)]'
-                }`}
-              >
-                {localPreview ? (
-                  <div className="flex flex-col items-center">
-                    <div className="relative mb-6">
-                       <img src={localPreview} alt="Preview" className="h-44 object-contain border border-[rgba(255,255,255,0.1)] shadow-2xl" />
-                       <div className="absolute inset-0 border border-[rgba(0,212,168,0.2)] pointer-events-none" />
+                    <input ref={fileRef} type="file" accept="image/*,.dcm" className="hidden" onChange={handleFileChange} />
+                    <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg border border-outline-variant/10">
+                      <span className="material-symbols-outlined text-primary text-4xl">{file ? 'verified' : 'upload_file'}</span>
                     </div>
-                    <p className="text-xs sm:text-sm tracking-[0.14em] text-[#00D4A8] font-black uppercase mb-2">SCAN_LOADED_OK</p>
-                    <p className="text-xs sm:text-sm text-[#555] font-mono tracking-[0.12em] break-all">{localFile?.name?.toUpperCase?.() || 'SAMPLE_SCAN.JPG'}</p>
-                    <button
-                      type="button"
-                      onClick={() => { setLocalFile(null); setLocalPreview(''); setScanPreviewUrl(''); }}
-                      className="mt-8 text-xs font-black tracking-[0.18em] text-[#FF4444] hover:text-[#ff6b6b] uppercase"
-                    >
-                      [ EJECT_FILE ]
-                    </button>
+                    {file ? (
+                      <>
+                        <h4 className="font-bold text-on-surface font-headline text-lg">{file.name}</h4>
+                        <p className="text-[10px] font-bold text-secondary mt-3 uppercase tracking-[0.2em]">Ready for neural processing</p>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="font-bold text-on-surface font-headline text-lg uppercase tracking-tight">Stream Diagnostic Assets</h4>
+                        <p className="text-xs text-on-surface-variant mt-3 max-w-xs font-medium">Supported: DICOM, MRI, CT. Max file size: 50MB</p>
+                      </>
+                    )}
                   </div>
-                ) : (
-                  <>
-                    <UploadCloud size={40} className={`mx-auto mb-6 transition-colors duration-500 ${dragActive ? 'text-[#00D4A8]' : 'text-[#333]'}`} />
-                    <p className="text-sm font-black tracking-[0.16em] text-[#FAFAFA] uppercase mb-4">Transfer Image Data</p>
-                    <p className="text-xs sm:text-sm tracking-[0.12em] text-[#555] uppercase mb-10 leading-relaxed">DRAG_DROP OR SELECT_LOCAL_SOURCE<br/>DICOM / PNG / JPEG</p>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="px-8 py-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.18em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
-                    >
-                      Browse Filesystem
-                    </button>
-                  </>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*,.dcm"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-            </section>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-12 flex justify-between items-center border-t border-outline-variant/10">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/dashboard')}
+                    className="px-8 py-4 text-on-surface-variant text-[10px] font-bold uppercase tracking-[0.25em] hover:text-on-surface transition-colors flex items-center gap-3 font-headline"
+                  >
+                    <span className="material-symbols-outlined text-base">close</span>
+                    Void Session
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-12 py-4 bg-gradient-to-br from-primary-container to-primary text-on-primary-container text-xs font-bold uppercase tracking-[0.2em] rounded-xl shadow-[0_15px_40px_rgba(0,112,243,0.3)] hover:scale-105 active:scale-95 transition-all font-headline"
+                  >
+                    Initialize Neural Analysis
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-
-        {/* Global Action */}
-        <div className="mt-16 flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="group w-full sm:w-auto justify-center flex items-center gap-4 sm:gap-6 px-8 sm:px-12 md:px-16 py-5 sm:py-6 bg-[#00D4A8] text-[#050505] text-sm font-black uppercase tracking-[0.18em] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] transition-all duration-500"
-          >
-            Run Neural Analysis
-            <ArrowRight size={20} className="group-hover:translate-x-3 transition-transform duration-500" />
-          </button>
-        </div>
-
-      </main>
-      <DisclaimerBanner />
+        </main>
+      </div>
     </div>
   );
 }

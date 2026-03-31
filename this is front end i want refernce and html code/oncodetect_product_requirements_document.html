@@ -1,0 +1,25 @@
+# OncoDetect Project Summary
+
+## Overview
+OncoDetect is a full-stack, AI-assisted multi-organ cancer triage prototype. It is designed as a professional demonstration workspace for screening brain, lung, and breast cancers. It does not provide real medical diagnoses but serves as a highly polished mock clinical tool.
+
+## Key Features
+- **Clinical Intake:** Captures patient demographics, medical history, symptoms, and handles medical scan uploads.
+- **AI Simulation:** Generates simulated, organ-specific probability outputs with confidence bands (acting as a mock Vision AI layer).
+- **LLM Reasoning:** Uses a local LLM (via Groq and Llama 3.3) to output clear, detailed reasoning for both doctors and patients based on the simulated scan data and patient symptoms.
+- **Self-Audit:** Implements a secondary pass to verify the reliability and quality of the model's reasoning before finalizing the report.
+- **Reporting:** Generates downloadable PDF clinical reports of the triage results.
+
+## Pipeline Flow (6 Stages)
+1. Input Ingestion
+2. Preprocessing
+3. Vision Signal (Mock)
+4. Clinical Logic
+5. LLM Reasoning
+6. Final Report / PDF Export
+
+## UI Design Requirements
+- **Theme:** Clean, ultra-futuristic, and highly professional medical software. No generic "AI wrapper" aesthetics.
+- **Colors:** Dark mode or monochrome base with sleek neon accents (medical blue, neon green, amber). Glassmorphism and sharp typography (Inter or Space Grotesk).
+- **Animations:** Fluid, high-end transitions using Framer Motion. Cascading grids and mathematically complex loading states.
+- **Core Screens:** Dashboard Hub, Patient Intake Form (Wizard), Live Analysis Sequence, Clinical Report View.

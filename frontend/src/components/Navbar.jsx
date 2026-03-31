@@ -1,89 +1,82 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
 import { useState } from 'react';
-
-const AnimatedLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="logo-svg flex-shrink-0">
-    <rect x="10" y="10" width="35" height="35" fill="none" stroke="#00D4A8" strokeWidth="4" className="logo-rect-1" />
-    <rect x="55" y="10" width="35" height="35" fill="none" stroke="#0090FF" strokeWidth="4" className="logo-rect-2" />
-    <rect x="10" y="55" width="35" height="35" fill="none" stroke="#FF4444" strokeWidth="4" className="logo-rect-3" />
-    <rect x="55" y="55" width="35" height="35" fill="none" stroke="#E8EDF5" strokeWidth="4" className="logo-rect-4" />
-    <path d="M 45 45 L 55 55 M 55 45 L 45 55" stroke="#FFFFFF" strokeWidth="3" className="logo-cross" />
-  </svg>
-);
 
 export default function Navbar() {
   const location = useLocation();
+  const { logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = [
-    { to: '/', label: 'ENTRANCE' },
-    { to: '/dashboard', label: 'DASHBOARD' },
-    { to: '/new-analysis', label: 'NEW ANALYSIS' },
-    { to: '/history', label: 'HISTORY' },
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/new-analysis', label: 'Patient Registry' },
+    { to: '/history', label: 'Archive' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(255,255,255,0.05)] bg-[#0A0F1E]/95 backdrop-blur-xl shadow-[0_16px_50px_rgba(0,0,0,0.25)]">
-      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 md:px-12 h-22 min-h-[88px] flex items-center justify-between gap-4">
-        {/* Logo Section */}
-        <Link to="/" className="flex items-center gap-4 group cursor-pointer overflow-hidden">
-          <AnimatedLogo />
-          <div className="flex flex-col mt-1">
-            <span className="text-lg sm:text-xl font-bold tracking-[0.16em] text-[#E8EDF5] uppercase leading-none">
-              ONCO<span className="text-[#00D4A8]">DETECT</span>
-            </span>
-            <span className="text-[11px] font-bold tracking-[0.14em] text-[#555] uppercase mt-1">
-              v1.0 Research
-            </span>
-          </div>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center justify-end h-full">
-          <div className="flex items-center gap-10 h-full mr-8">
+    <>
+      <header className="shrink-0 w-full z-50 bg-[#131315]/80 backdrop-blur-xl border-b border-[#0070f3]/10 shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex justify-between items-center h-16 px-6 relative">
+        {/* Left: Logo + Nav */}
+        <div className="flex items-center gap-8">
+          <Link to="/" className="text-xl font-bold tracking-tighter text-on-surface font-headline">
+            OncoDetect
+          </Link>
+          <nav className="hidden md:flex gap-8 items-center h-full">
             {links.map((link) => {
-            const isActive = location.pathname === link.to;
-            return (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`relative flex items-center justify-center h-full px-2 text-sm font-bold tracking-[0.18em] transition-colors duration-300 uppercase
-                  ${isActive ? 'text-[#00D4A8]' : 'text-[#7A8DA8] hover:text-[#E8EDF5]'}
-                `}
-              >
-                {link.label}
-                {/* Active Indicator Line */}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#00D4A8] shadow-[0_0_12px_#00D4A8]" />
-                )}
-              </Link>
-            );
-          })}
-          </div>
-          
-          {/* Live Indicator */}
-          <div className="flex items-center gap-2 pl-8 border-l border-[rgba(255,255,255,0.05)] h-1/2">
-            <div className="relative flex items-center justify-center w-2 h-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-[#00D4A8] opacity-75 animate-ping"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00D4A8]"></span>
-            </div>
-            <span className="text-xs font-bold tracking-[0.16em] text-[#00D4A8] uppercase">LIVE</span>
-          </div>
+              const isActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`font-bold tracking-tight text-sm uppercase transition-all duration-300 ${
+                    isActive
+                      ? 'text-primary border-b-2 border-primary pb-1'
+                      : 'text-on-surface-variant/60 hover:text-on-surface'
+                  } font-headline`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Mobile Toggle Button */}
-        <button
-          className="md:hidden text-[#7A8DA8] hover:text-[#E8EDF5] p-2 transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
+        {/* Right: Actions */}
+        <div className="flex items-center gap-4">
+          <button className="p-2 text-on-surface-variant/60 hover:bg-surface-container-high rounded-lg transition-colors active:scale-95">
+            <span className="material-symbols-outlined">settings</span>
+          </button>
+          <button className="p-2 text-on-surface-variant/60 hover:bg-surface-container-high rounded-lg transition-colors active:scale-95 relative">
+            <span className="material-symbols-outlined">notifications</span>
+            <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full shadow-[0_0_8px_#4edea3]"></span>
+          </button>
+          <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+            <div className="text-right">
+              <p className="text-xs font-bold leading-none font-headline">Dr. Aris</p>
+              <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] leading-none mt-1.5 font-bold">Oncology Lead</p>
+            </div>
+            <button
+              onClick={logout}
+              className="w-9 h-9 rounded-xl bg-surface-container-high border border-outline-variant/10 flex items-center justify-center hover:bg-surface-bright hover:border-primary/30 transition-all group"
+              title="Logout"
+            >
+              <span className="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">account_circle</span>
+            </button>
+          </div>
 
-      {/* Mobile Menu Dropdown */}
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 text-on-surface-variant/60 hover:bg-surface-container-high rounded-lg"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            <span className="material-symbols-outlined">{mobileOpen ? 'close' : 'menu'}</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Dropdown */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0A0F1E] border-t border-[rgba(255,255,255,0.05)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+        <div className="md:hidden absolute top-16 left-0 right-0 z-50 bg-[#1c1b1d] border-b border-outline-variant/10 flex flex-col shadow-[0_40px_80px_rgba(0,0,0,0.6)] animate-fade-in-up">
           {links.map((link) => {
             const isActive = location.pathname === link.to;
             return (
@@ -91,16 +84,24 @@ export default function Navbar() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center w-full px-8 py-5 text-sm font-bold tracking-[0.2em] uppercase border-b border-[rgba(255,255,255,0.02)] transition-colors duration-200
-                  ${isActive ? 'bg-[rgba(0,212,168,0.05)] text-[#00D4A8] border-l-4 border-l-[#00D4A8]' : 'text-[#7A8DA8] hover:bg-[rgba(255,255,255,0.02)] hover:text-[#E8EDF5] border-l-4 border-l-transparent'}
-                `}
+                className={`px-8 py-5 text-sm font-bold uppercase tracking-widest transition-all ${
+                  isActive
+                    ? 'text-primary bg-primary/10 border-l-4 border-primary'
+                    : 'text-on-surface-variant/60 hover:bg-surface-container-high hover:text-on-surface'
+                } font-headline`}
               >
                 {link.label}
               </Link>
             );
           })}
+          <button
+            onClick={() => { logout(); setMobileOpen(false); }}
+            className="px-8 py-5 text-sm font-bold uppercase tracking-widest text-error/80 hover:bg-surface-container-high text-left font-headline"
+          >
+            Terminal Logout
+          </button>
         </div>
       )}
-    </nav>
+    </>
   );
 }

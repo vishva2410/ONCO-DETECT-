@@ -12,7 +12,8 @@ from reportlab.lib.colors import (
 )
 from reportlab.platypus import (
   SimpleDocTemplate, Paragraph, Spacer,
-  Table, TableStyle, HRFlowable, Image
+  Table, TableStyle, HRFlowable, Image,
+  ListFlowable, ListItem
 )
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from pydantic import BaseModel
@@ -259,8 +260,8 @@ async def generate_pdf_report(data: ReportRequest):
         if data.differentialHints:
             story.append(Spacer(1, 2*mm))
             story.append(Paragraph("<b>Differential Considerations</b>", style_body))
-            for hint in data.differentialHints:
-                story.append(Paragraph(f"• {hint}", style_body))
+            list_items = [ListItem(Paragraph(hint, style_body), leftIndent=15, bulletColor=COLOR_DARK) for hint in data.differentialHints]
+            story.append(ListFlowable(list_items, bulletType='bullet', bulletFontSize=10, start='circle'))
         story.append(Spacer(1, 4*mm))
 
         # --- PATIENT EXPLANATION SECTION ---
@@ -287,8 +288,8 @@ async def generate_pdf_report(data: ReportRequest):
         story.append(Spacer(1, 4*mm))
         
         if data.recommendations:
-            for rec in data.recommendations:
-                story.append(Paragraph(f"• {rec}", style_body))
+            rec_items = [ListItem(Paragraph(rec, style_body), leftIndent=15, bulletColor=COLOR_DARK) for rec in data.recommendations]
+            story.append(ListFlowable(rec_items, bulletType='bullet', bulletFontSize=10, start='circle'))
         story.append(Spacer(1, 4*mm))
 
         # --- AUDIT FLAGS SECTION ---

@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield } from 'lucide-react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
 
 export default function Entrance() {
   const navigate = useNavigate();
-  const [initStage, setInitStage] = useState(0); // 0: Logo, 1: Text, 2: Button
+  const [initStage, setInitStage] = useState(0);
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    // Initialization Sequence
     const sequence = [
       { time: 500, log: 'INITIALIZING_NEURAL_CORES...' },
       { time: 1200, log: 'LOADING_VIT_VISION_MODULE...' },
@@ -18,56 +16,44 @@ export default function Entrance() {
       { time: 3000, log: 'SYSTEM_READY: ONCODETECT_V1.2' },
       { time: 3500, stage: 2 },
     ];
-
     const timers = sequence.map((item) =>
       setTimeout(() => {
         if (item.log) setLogs(prev => [...prev.slice(-3), item.log]);
         if (item.stage !== undefined) setInitStage(item.stage);
       }, item.time)
     );
-
-    return () => timers.forEach((timer) => clearTimeout(timer));
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden">
-      
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0">
-        <div className="absolute top-[10%] left-[-5%] w-[600px] h-[600px] bg-[#00D4A8] rounded-full filter blur-[120px] opacity-[0.03] animate-float1" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[600px] h-[600px] bg-[#0090FF] rounded-full filter blur-[120px] opacity-[0.03] animate-float2" />
-        
-        {/* Scanning grid overlay */}
-        <div className="absolute inset-0 opacity-[0.02]" 
-          style={{ 
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '40px 40px'
-          }} 
-        />
+        <div className="absolute top-[10%] left-[-5%] w-[600px] h-[600px] bg-[#0070f3] rounded-full filter blur-[120px] opacity-[0.04] animate-float" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[600px] h-[600px] bg-[#4edea3] rounded-full filter blur-[120px] opacity-[0.03] animate-float" />
+        <div className="data-grid-overlay absolute inset-0 opacity-20 pointer-events-none" />
       </div>
 
       <div className="z-10 flex flex-col items-center justify-center text-center px-5 sm:px-6 max-w-5xl mx-auto w-full">
-        
-        {/* Stage 0/1: Logo Core */}
-        <Motion.div 
+        {/* Logo Core */}
+        <Motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12 relative"
         >
-          <div className="w-24 h-24 border border-[rgba(0,212,168,0.3)] relative flex items-center justify-center group">
-             <Shield size={40} className="text-[#00D4A8] relative z-20" />
-             {/* Animated corners */}
-             <Motion.div 
+          <div className="w-24 h-24 rounded-xl border border-[rgba(0,112,243,0.3)] relative flex items-center justify-center group">
+            <span className="material-symbols-outlined text-primary text-5xl relative z-20">shield</span>
+            <Motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 border border-dashed border-[rgba(0,212,168,0.2)]" 
-             />
-             <div className="absolute inset-0 bg-[#00D4A8]/10 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
+              className="absolute inset-0 border border-dashed border-[rgba(0,112,243,0.2)] rounded-xl"
+            />
+            <div className="absolute inset-0 bg-primary/10 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000 rounded-xl" />
           </div>
         </Motion.div>
 
-        {/* Stage 1: Brand Header */}
+        {/* Brand Header */}
         <AnimatePresence>
           {initStage >= 1 && (
             <Motion.div
@@ -76,18 +62,18 @@ export default function Entrance() {
               transition={{ duration: 1, ease: "easeOut" }}
               className="mb-16"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-[0.18em] md:tracking-[0.28em] text-[#FAFAFA] uppercase mb-6 leading-tight">
-                ONCO<span className="text-[#00D4A8]">DETECT</span>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-[0.18em] md:tracking-[0.28em] text-on-surface uppercase mb-6 leading-tight" style={{ fontFamily: 'Space Grotesk' }}>
+                ONCO<span className="text-primary">DETECT</span>
               </h1>
-              <p className="text-[#7A8DA8] text-xs sm:text-sm tracking-[0.2em] md:tracking-[0.35em] uppercase font-bold max-w-2xl mx-auto leading-loose">
+              <p className="text-on-surface-variant text-xs sm:text-sm tracking-[0.2em] md:tracking-[0.35em] uppercase font-bold max-w-2xl mx-auto leading-loose" style={{ fontFamily: 'Space Grotesk' }}>
                 ADVANCED MULTI-ORGAN TRIAGE <br className="hidden md:block"/>
-                <span className="text-[#444] mt-4 block">CLINICAL REASONING AGENT 001</span>
+                <span className="text-outline-variant mt-4 block">CLINICAL REASONING AGENT 001</span>
               </p>
             </Motion.div>
           )}
         </AnimatePresence>
 
-        {/* Stage 2: Action Button */}
+        {/* Action Button */}
         <AnimatePresence>
           {initStage >= 2 && (
             <Motion.div
@@ -97,46 +83,45 @@ export default function Entrance() {
             >
               <button
                 onClick={() => navigate('/sign-in')}
-                className="group relative flex items-center justify-center gap-4 sm:gap-6 px-8 sm:px-12 md:px-16 py-5 sm:py-6 border border-[rgba(0,212,168,0.3)] text-[#00D4A8] text-sm font-bold tracking-[0.16em] sm:tracking-[0.24em] uppercase transition-all duration-700 hover:bg-[#00D4A8] hover:text-[#050505] hover:shadow-[0_0_50px_rgba(0,212,168,0.4)] overflow-hidden"
+                className="group relative flex items-center justify-center gap-4 sm:gap-6 px-8 sm:px-12 md:px-16 py-5 sm:py-6 border border-primary/30 text-primary text-sm font-bold tracking-[0.16em] sm:tracking-[0.24em] uppercase transition-all duration-700 hover:bg-primary-container hover:text-on-primary-container hover:shadow-[0_0_50px_rgba(0,112,243,0.4)] overflow-hidden rounded-lg"
+                style={{ fontFamily: 'Space Grotesk' }}
               >
                 <span className="relative z-10 flex items-center gap-4">
                   Initialize Terminal
-                  <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-3" />
+                  <span className="material-symbols-outlined text-lg transition-transform duration-500 group-hover:translate-x-3">arrow_forward</span>
                 </span>
-                
-                {/* Button slide effect */}
-                <div className="absolute inset-0 w-0 bg-[#00D4A8] group-hover:w-full transition-all duration-700 ease-[cubic-bezier(0.19, 1, 0.22, 1)]" />
+                <div className="absolute inset-0 w-0 bg-primary-container group-hover:w-full transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]" />
               </button>
             </Motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Initialize Logs (Bottom Right) */}
-      <div className="absolute bottom-10 right-10 text-left font-mono text-[11px] tracking-[0.14em] text-[#444] hidden md:block uppercase space-y-2">
+      {/* Init Logs */}
+      <div className="absolute bottom-10 right-10 text-left font-mono text-[11px] tracking-[0.14em] text-outline-variant hidden md:block uppercase space-y-2">
         {logs.map((log, i) => (
-          <Motion.div 
+          <Motion.div
             key={i}
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <span className="text-[#00D4A8] opacity-50">{">>"}</span> {log}
+            <span className="text-primary opacity-50">{">>"}</span> {log}
           </Motion.div>
         ))}
       </div>
 
-      {/* Terminal Decor (Bottom Left) */}
-      <div className="absolute bottom-10 left-10 text-left font-mono text-[11px] tracking-[0.14em] text-[#444] hidden md:block uppercase">
+      {/* Terminal Decor */}
+      <div className="absolute bottom-10 left-10 text-left font-mono text-[11px] tracking-[0.14em] text-outline-variant hidden md:block uppercase" style={{ fontFamily: 'Space Grotesk' }}>
         <p>AUTH_STATE: UNAUTHORIZED</p>
         <p>NETWORK_STATUS: ENCRYPTED</p>
       </div>
 
       {/* Corner Brackets */}
-      <div className="absolute top-8 left-8 w-12 h-12 border-t border-l border-[rgba(255,255,255,0.05)]" />
-      <div className="absolute top-8 right-8 w-12 h-12 border-t border-r border-[rgba(255,255,255,0.05)]" />
-      <div className="absolute bottom-8 left-8 w-12 h-12 border-b border-l border-[rgba(255,255,255,0.05)]" />
-      <div className="absolute bottom-8 right-8 w-12 h-12 border-b border-r border-[rgba(255,255,255,0.05)]" />
+      <div className="absolute top-8 left-8 w-12 h-12 border-t border-l border-outline-variant/10 rounded-tl-lg" />
+      <div className="absolute top-8 right-8 w-12 h-12 border-t border-r border-outline-variant/10 rounded-tr-lg" />
+      <div className="absolute bottom-8 left-8 w-12 h-12 border-b border-l border-outline-variant/10 rounded-bl-lg" />
+      <div className="absolute bottom-8 right-8 w-12 h-12 border-b border-r border-outline-variant/10 rounded-br-lg" />
     </div>
   );
 }

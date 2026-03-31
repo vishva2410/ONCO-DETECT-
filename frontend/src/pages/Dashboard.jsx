@@ -1,239 +1,277 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Activity, Circle, Terminal, Zap } from 'lucide-react';
-import DisclaimerBanner from '../components/DisclaimerBanner';
-import CaseLibrary from '../components/CaseLibrary';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { usePageTransition } from '../hooks/usePageTransition';
-
-/* ─── Node Graph Data ──────────────────────────────────────── */
-const nodes = [
-  { id: 'input', label: 'Input Layer', x: 60, y: 150, type: 'input' },
-  { id: 'brain', label: 'Brain MRI', x: 220, y: 60, type: 'organ' },
-  { id: 'lung', label: 'Lung X-Ray', x: 220, y: 150, type: 'organ' },
-  { id: 'breast', label: 'Mammogram', x: 220, y: 240, type: 'organ' },
-  { id: 'fusion', label: 'Feature Fusion', x: 400, y: 150, type: 'process' },
-  { id: 'llm', label: 'LLM Reasoning', x: 560, y: 120, type: 'llm' },
-  { id: 'audit', label: 'Self-Audit', x: 560, y: 200, type: 'audit' },
-  { id: 'output', label: 'Triage Output', x: 720, y: 150, type: 'output' },
-];
-
-const edges = [
-  ['input', 'brain'], ['input', 'lung'], ['input', 'breast'],
-  ['brain', 'fusion'], ['lung', 'fusion'], ['breast', 'fusion'],
-  ['fusion', 'llm'], ['fusion', 'audit'],
-  ['llm', 'output'], ['audit', 'output'],
-];
-
-/* ─── System logs ──────────────────────────────────────────── */
-const systemLogs = [
-  { time: '10:44:02', msg: 'System initialized — 3 organ modules loaded', type: 'info' },
-  { time: '10:44:03', msg: 'Brain MRI model: ResNet-50 weights verified', type: 'ok' },
-  { time: '10:44:03', msg: 'Lung X-Ray model: DenseNet-121 weights verified', type: 'ok' },
-  { time: '10:44:04', msg: 'Breast Mammo model: EfficientNet-B4 weights verified', type: 'ok' },
-  { time: '10:44:05', msg: 'LLM reasoning engine: standby', type: 'info' },
-  { time: '10:44:06', msg: 'Self-audit module: active', type: 'ok' },
-  { time: '10:44:07', msg: 'Awaiting scan input...', type: 'wait' },
-];
+import api from '../lib/api';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [caseLibOpen, setCaseLibOpen] = useState(false);
-  const [confidenceAnim, setConfidenceAnim] = useState(0);
-  const isVisible = usePageTransition(10);
+  const [reports, setReports] = useState([]);
 
-  // Animate confidence score
   useEffect(() => {
-    const target = 94.2;
-    let current = 0;
-    const step = target / 60;
-    const interval = setInterval(() => {
-      current += step;
-      if (current >= target) { current = target; clearInterval(interval); }
-      setConfidenceAnim(current);
-    }, 16);
-    return () => clearInterval(interval);
+    api.get('/api/reports').then(r => setReports(r.data || [])).catch(() => {});
   }, []);
 
-  // Get node position helper
-  const getNode = (id) => nodes.find(n => n.id === id);
+  const getTriageBadge = (level) => {
+    const m = {
+      'HIGH':     { bg: 'bg-error-container', text: 'text-on-error-container' },
+      'MODERATE': { bg: 'bg-tertiary-container', text: 'text-on-tertiary-container' },
+      'LOW':      { bg: 'bg-secondary-container', text: 'text-on-secondary-container' },
+    };
+    return m[level] || m['LOW'];
+  };
+
+  const getTriageColor = (level) => {
+    return { HIGH: 'bg-error', MODERATE: 'bg-tertiary', LOW: 'bg-secondary' }[level] || 'bg-secondary';
+  };
+
+  const organIcon = (o) => {
+    return { brain: 'psychology', lung: 'pulmonology', breast: 'female' }[o] || 'biotech';
+  };
+
+  const organLabel = (o) => {
+    return { brain: 'Cerebral', lung: 'Pulmonary', breast: 'Mammary' }[o] || o;
+  };
+
+  const recentReports = reports.slice(0, 3);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#050505]">
+    <div className="h-screen flex flex-col bg-surface-container-lowest text-on-surface overflow-hidden">
       <Navbar />
 
-      <main className="flex-1 px-8 md:px-12 pt-32 pb-16 max-w-[1400px] mx-auto w-full transition-all duration-700"
-        style={{ opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(24px)' }}
-      >
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-1.5 bg-[#00D4A8] animate-pulse" />
-              <span className="text-xs sm:text-sm font-bold tracking-[0.18em] text-[#00D4A8] uppercase">Neural Network Engine</span>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        <aside className="w-64 h-full bg-surface-container-low hidden md:flex flex-col py-4 gap-2 text-sm font-medium border-r border-outline-variant/5 shrink-0">
+          <div className="px-4 py-6 mb-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary">account_circle</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.12em] text-[#FAFAFA] uppercase">System Overview</h1>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)]">
-             <Terminal size={12} className="text-[#555]" />
-             <span className="text-xs sm:text-sm font-mono text-[#7A8DA8] tracking-[0.12em] uppercase">Kernel_State: Stable</span>
-          </div>
-        </div>
-
-        {/* Top Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {[
-            { label: "Pipeline Status", value: "Standby", sub: "3 Modules Ready", color: "#00D4A8" },
-            { label: "Daily Throughput", value: "137 Scans", sub: "+12% vs week", color: "#0090FF" },
-            { label: "Reasoning Depth", value: "llama-3.3", sub: "Groq LPU Array", color: "#A855F7" },
-            { label: "Confidence Floor", value: "94.2%", sub: "Audit Threshold", color: "#FFBC42" }
-          ].map((stat) => (
-            <div key={stat.label} className="glass-card p-6 border-t font-semibold" style={{ borderTop: `2px solid ${stat.color}44` }}>
-              <p className="text-xs text-[#7A8DA8] tracking-[0.14em] uppercase mb-4">{stat.label}</p>
-              <p className="text-2xl font-bold text-[#FAFAFA] mb-1">{stat.value}</p>
-              <p className="text-xs sm:text-sm text-[#444] tracking-[0.08em] uppercase">{stat.sub}</p>
+            <div>
+              <p className="text-on-surface font-semibold font-headline">Dr. Aris</p>
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest">Oncology Lead</p>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Main Sections Grid */}
-        <div className="grid grid-cols-12 gap-8">
-          
-          {/* Architecture Visualizer (Left) */}
-          <div className="col-span-12 lg:col-span-8 glass-card p-10 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">System Architecture</h2>
+          <div className="flex-1 flex flex-col gap-1">
+            <Link to="/dashboard" className="mx-2 px-4 py-3 bg-primary-container/10 text-primary border-l-4 border-primary-container flex items-center gap-3 transition-all">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span>
+              <span>Overview</span>
+            </Link>
+            <Link to="/new-analysis" className="mx-2 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface flex items-center gap-3 transition-all">
+              <span className="material-symbols-outlined">biotech</span>
+              <span>Scanning</span>
+            </Link>
+            <Link to="/history" className="mx-2 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface flex items-center gap-3 transition-all">
+              <span className="material-symbols-outlined">description</span>
+              <span>Reports</span>
+            </Link>
+          </div>
+
+          <div className="mt-auto px-4 pb-4 flex flex-col gap-4">
+            <button
+              onClick={() => navigate('/new-analysis')}
+              className="w-full py-3 bg-primary-container text-on-primary-container font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20 hover:brightness-110 transition-all font-headline"
+            >
+              <span className="material-symbols-outlined">add_circle</span>
+              Start New Scan
+            </button>
+            <div className="flex flex-col gap-1 border-t border-outline-variant/10 pt-4">
+              <div className="px-2 py-2 text-on-surface-variant flex items-center gap-3 text-[10px] uppercase tracking-widest">
+                <span className="material-symbols-outlined text-secondary text-base">check_circle</span>
+                <span>System Status</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto relative">
+          <div className="data-grid-overlay absolute inset-0 opacity-10 pointer-events-none"></div>
+          <div className="p-8 max-w-[1400px] mx-auto relative z-10">
+            {/* Header */}
+            <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <p className="text-primary text-[10px] tracking-[0.2em] uppercase font-bold mb-2">Clinical Observatory</p>
+                <h1 className="text-4xl font-bold tracking-tight">System Overview</h1>
+              </div>
               <div className="flex items-center gap-4">
-                <Circle size={8} className="fill-emerald-400 text-emerald-400 animate-pulse" />
-                <span className="text-xs font-bold text-[#555] tracking-[0.14em] uppercase">Flow_Active</span>
+                <div className="px-4 py-2 bg-surface-container rounded-lg border border-outline-variant/10 flex items-center gap-3">
+                  <div className="w-2   h-2 rounded-full bg-secondary shadow-[0_0_8px_#4edea3]"></div>
+                  <span className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">AI Inference Engine: Online</span>
+                </div>
+              </div>
+            </header>
+
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              {/* Left 8 columns */}
+              <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Scanner Status */}
+                <div className="bg-surface-container-low rounded-xl p-6 relative overflow-hidden border border-outline-variant/5">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Scanner Cluster 01</span>
+                    <span className="material-symbols-outlined text-on-surface-variant">biotech</span>
+                  </div>
+                  <div className="mb-6">
+                    <p className="text-4xl font-bold mb-1">98.4<span className="text-primary text-xl">%</span></p>
+                    <p className="text-[10px] text-on-surface-variant uppercase tracking-wider">Availability Index (Last 24h)</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-[10px] uppercase font-bold">
+                      <span className="text-on-surface-variant">Current Load</span>
+                      <span className="text-on-surface">42%</span>
+                    </div>
+                    <div className="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                      <div className="h-full bg-secondary w-[42%]"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Telemetry */}
+                <div className="bg-surface-container-low rounded-xl p-6 relative overflow-hidden border border-outline-variant/5">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Global Telemetry</span>
+                    <span className="material-symbols-outlined text-on-surface-variant">query_stats</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-2xl font-bold">{reports.length > 0 ? reports.length.toLocaleString() : '0'}</p>
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-widest">Scans Completed</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold font-headline">12ms</p>
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-widest">Latency</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-outline-variant/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-primary-container/20 text-primary rounded">OPTIMAL</span>
+                      <span className="text-[10px] text-on-surface-variant uppercase tracking-wider">Calibration: PASS</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Card */}
+                <div className="md:col-span-2 bg-gradient-to-br from-primary-container to-[#0059c5] rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
+                  <div className="absolute -right-10 -bottom-10 opacity-10">
+                    <span className="material-symbols-outlined text-[200px]" style={{ fontVariationSettings: "'FILL' 1" }}>biotech</span>
+                  </div>
+                  <div className="relative z-10 max-w-md">
+                    <h2 className="text-3xl font-bold text-white mb-4 leading-tight">Initiate Advanced Oncology Analysis</h2>
+                    <p className="text-white/80 text-sm mb-6 leading-relaxed">Deploy high-fidelity AI models for multi-spectral organ scan triage. Precision detection with 99.8% resolution accuracy.</p>
+                    <button
+                      onClick={() => navigate('/new-analysis')}
+                      className="px-8 py-3 bg-white text-[#001a43] font-extrabold rounded-lg flex items-center gap-3 hover:bg-surface-dim transition-all active:scale-95 shadow-xl font-headline"
+                    >
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+                      Start New Analysis
+                    </button>
+                  </div>
+                  <div className="relative z-10 hidden lg:block bg-black/30 backdrop-blur-md rounded-xl p-6 border border-white/10 shrink-0">
+                    <div className="space-y-4">
+                      {['Trained on 5M+ images', 'Real-time sync active', 'FDA Class II Certified'].map((t,i) => (
+                        <div key={i} className="flex items-center gap-4">
+                          <div className="w-2 h-2 rounded-full bg-secondary"></div>
+                          <span className="text-xs text-white/90 font-bold uppercase tracking-wider">{t}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right 4 columns — Triage List */}
+              <div className="md:col-span-4 bg-surface-container-low rounded-xl p-6 flex flex-col border border-outline-variant/10">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold text-on-surface">Recent Triage</h3>
+                  <span className="text-[10px] text-on-surface-variant uppercase tracking-widest bg-surface-container-highest px-2 py-1 rounded font-bold">Live Updates</span>
+                </div>
+                <div className="space-y-4 flex-1 overflow-y-auto">
+                  {recentReports.length === 0 && (
+                    <p className="text-[10px] text-on-surface-variant text-center py-8 uppercase tracking-[0.2em]">No triage records yet.</p>
+                  )}
+                  {recentReports.map((r, idx) => {
+                    const badge = getTriageBadge(r.triage_level);
+                    const barColor = getTriageColor(r.triage_level);
+                    const prob = typeof r.probability_score === 'number' ? Math.round(r.probability_score * 100) : 0;
+                    return (
+                      <Link
+                        to={`/report/${r.id}`}
+                        key={idx}
+                        className="p-4 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group block border border-outline-variant/5"
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <p className="text-[10px] text-on-surface-variant mb-1 font-bold uppercase tracking-widest">Patient ID</p>
+                            <p className="font-bold text-on-surface font-mono">{r.patient_name || `#OD-${r.id}`}</p>
+                          </div>
+                          <div className={`px-2 py-1 ${badge.bg} ${badge.text} text-[10px] font-bold rounded uppercase tracking-tighter`}>
+                            {r.triage_level || 'LOW'}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="material-symbols-outlined text-xs text-on-surface-variant">{organIcon(r.organ_type)}</span>
+                              <span className="text-[10px] text-on-surface font-bold uppercase tracking-wider">{organLabel(r.organ_type)}</span>
+                            </div>
+                            <div className="h-1 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+                              <div className={`h-full ${barColor}`} style={{ width: `${prob}%` }}></div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className={`text-xl font-bold ${barColor === 'bg-error' ? 'text-error' : barColor === 'bg-tertiary' ? 'text-tertiary' : 'text-secondary'}`}>
+                              {prob}%
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                <Link
+                  to="/history"
+                  className="mt-6 w-full py-3 border border-outline-variant/20 text-on-surface-variant text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-surface-container-highest transition-colors text-center block rounded-lg"
+                >
+                  View Full Registry
+                </Link>
+              </div>
+
+              {/* Bottom intelligence row */}
+              <div className="md:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-6 mt-2">
+                {[
+                  { icon: 'dns', color: 'text-primary', label: 'Node Status', value: '3/3' },
+                  { icon: 'memory', color: 'text-secondary', label: 'ML Logic', value: 'Neural_01' },
+                  { icon: 'update', color: 'text-tertiary', label: 'Sync', value: 'Active' },
+                  { icon: 'security', color: 'text-on-surface-variant', label: 'Encryption', value: 'AES-256' },
+                ].map((m, i) => (
+                  <div key={i} className="bg-surface-container-low border border-outline-variant/5 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                    <span className={`material-symbols-outlined ${m.color} mb-3 text-2xl`}>{m.icon}</span>
+                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mb-1">{m.label}</p>
+                    <p className="text-lg font-bold tracking-tight">{m.value}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* SVG Graph */}
-            <div className="w-full overflow-x-auto">
-               <svg viewBox="0 0 800 300" className="w-full min-w-[760px] h-auto opacity-80" strokeLinecap="square">
-                 <defs>
-                   <linearGradient id="edgeStep" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="transparent" />
-                      <stop offset="100%" stopColor="#00D4A8" />
-                   </linearGradient>
-                 </defs>
-                 
-                 {/* Edges with data flow */}
-                 {edges.map(([from, to], i) => {
-                   const a = getNode(from);
-                   const b = getNode(to);
-                   return (
-                     <g key={`edge-${i}`}>
-                       <line 
-                         x1={a.x + 50} y1={a.y + 18} x2={b.x - 5} y2={b.y + 18}
-                         stroke="rgba(255,255,255,0.04)" strokeWidth="1"
-                       />
-                       <circle r="1.5" fill="#00D4A8">
-                         <animateMotion 
-                           dur={`${1.5 + (i%2)}s`} repeatCount="indefinite"
-                           path={`M${a.x + 50},${a.y + 18} L${b.x - 5},${b.y + 18}`}
-                           begin={`${i * 0.2}s`}
-                         />
-                       </circle>
-                     </g>
-                   );
-                 })}
-
-                 {/* Nodes */}
-                 {nodes.map((node) => {
-                   const colors = {
-                    input: '#7A8DA8', organ: '#0090FF', process: '#00D4A8',
-                    llm: '#A855F7', audit: '#FFBC42', output: '#00D4A8'
-                   };
-                   const c = colors[node.type];
-                   return (
-                     <g key={node.id}>
-                       <rect 
-                        x={node.x} y={node.y} width={100} height={36} 
-                        fill="rgba(5,5,5,0.8)" stroke={`${c}44`} strokeWidth="1"
-                       />
-                       <text x={node.x + 50} y={node.y + 22} textAnchor="middle" fontSize="9" fill={c} fontWeight="bold" className="uppercase tracking-widest font-mono">
-                         {node.label}
-                       </text>
-                     </g>
-                   );
-                 })}
-               </svg>
-            </div>
+            {/* Footer */}
+            <footer className="mt-16 pb-12 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-8">
+                <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-bold">© 2025 OncoDetect Systems</p>
+                <div className="flex gap-6">
+                  <span className="text-[10px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer uppercase font-bold tracking-widest">Compliance</span>
+                  <span className="text-[10px] text-on-surface-variant hover:text-primary transition-colors cursor-pointer uppercase font-bold tracking-widest">API Documentation</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-surface-container-high px-5 py-2 rounded-full border border-white/5">
+                <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                <span className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-bold">Node: CN-WASH-DC-04 [PROD]</span>
+              </div>
+            </footer>
           </div>
-
-          {/* Right Column: Performance and Actions */}
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
-            
-            {/* Action Card */}
-            <div className="glass-card p-10 bg-[rgba(0,212,168,0.02)]">
-               <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase mb-8">Quick Actions</h3>
-               <button 
-                onClick={() => navigate('/new-analysis')}
-                className="w-full flex items-center justify-between p-6 bg-[#00D4A8] text-[#050505] text-sm font-bold uppercase tracking-[0.14em] mb-4 hover:shadow-[0_0_30px_rgba(0,212,168,0.3)] transition-all"
-               >
-                 <span>Start New Analysis</span>
-                 <Zap size={16} />
-               </button>
-               <button 
-                onClick={() => setCaseLibOpen(true)}
-                className="w-full flex items-center justify-between p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] text-[#FAFAFA] text-sm font-bold uppercase tracking-[0.14em] hover:bg-[rgba(255,255,255,0.05)] transition-all"
-               >
-                 <span>Load Sample Case</span>
-                 <Activity size={16} />
-               </button>
-            </div>
-
-            {/* Accuracy Card */}
-            <div className="glass-card p-10">
-               <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase mb-10 text-center">Engine Performance</h3>
-               <div className="flex items-center justify-center relative">
-                 <svg width="140" height="140" className="-rotate-90">
-                   <circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="8" />
-                   <circle 
-                    cx="70" cy="70" r="54" fill="none" stroke="#00D4A8" strokeWidth="8"
-                    strokeDasharray={339.29} strokeDashoffset={339.29 * (1 - confidenceAnim/100)}
-                    style={{ transition: 'stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)' }}
-                   />
-                 </svg>
-                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold font-mono">{confidenceAnim.toFixed(1)}%</span>
-                    <span className="text-xs sm:text-sm text-[#555] uppercase tracking-[0.12em] font-bold">Accuracy</span>
-                 </div>
-               </div>
-            </div>
-          </div>
-
-          {/* Bottom Row: Logs */}
-          <div className="col-span-12 glass-card p-10">
-            <div className="flex items-center gap-3 mb-8">
-              <Terminal size={14} className="text-[#00D4A8]" />
-              <h3 className="text-sm font-bold tracking-[0.14em] text-[#FAFAFA] uppercase">System Execution Logs</h3>
-            </div>
-            <div className="font-mono text-xs sm:text-sm space-y-4 tracking-[0.08em] max-h-60 overflow-y-auto custom-scrollbar pr-4">
-               {systemLogs.map((log, i) => (
-                 <div key={i} className="flex gap-10 border-b border-[rgba(255,255,255,0.02)] pb-3">
-                   <span className="text-[#333] shrink-0 uppercase">{log.time}</span>
-                   <span className={log.type === 'ok' ? 'text-[#00D4A8]' : 'text-[#7A8DA8]'}>
-                     [{log.type.toUpperCase()}] {log.msg}
-                   </span>
-                 </div>
-               ))}
-               <div className="flex gap-10 items-center">
-                  <span className="text-[#333] shrink-0 uppercase">10:44:08</span>
-                  <div className="w-2 h-4 bg-[#00D4A8] animate-pulse" />
-               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-12">
-           <DisclaimerBanner />
-        </div>
-      </main>
-
-      <CaseLibrary isOpen={caseLibOpen} onClose={() => setCaseLibOpen(false)} />
+        </main>
+      </div>
     </div>
   );
 }

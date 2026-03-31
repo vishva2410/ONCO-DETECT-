@@ -92,7 +92,9 @@ def process_lung_scan(image: Image.Image) -> dict:
         # Softmax for multi-class
         exp_vals = np.exp(logits - np.max(logits)) # stability
         probs = exp_vals / np.sum(exp_vals)
-        score = float(probs[1] if len(probs) == 2 else np.max(probs))
+        # dorsar/lung-cancer-detection 4 classes: Adenocarcinoma, Large Cell, Normal, Squamous
+        # Index 2 is 'Normal'. Cancer risk = 1.0 - Normal probability
+        score = float(1.0 - probs[2]) if len(probs) > 2 else float(probs[1])
     else:
         # Sigmoid binary
         score = float(1 / (1 + np.exp(-logits[0])))
@@ -115,7 +117,9 @@ def process_brain_scan(image: Image.Image) -> dict:
     preds = model.predict(img_array, verbose=0)[0]
     
     if len(preds) > 1:
-        score = float(preds[1] if len(preds) == 2 else np.max(preds))
+        # jawadskript/brain_tumor_detection 4 classes: glioma, meningioma, no_tumor, pituitary
+        # Index 2 is 'no_tumor'. Tumor risk = 1.0 - no_tumor probability
+        score = float(1.0 - preds[2]) if len(preds) > 2 else float(preds[1])
     else:
         score = float(preds[0])
         

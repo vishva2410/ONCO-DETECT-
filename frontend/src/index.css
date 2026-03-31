@@ -1,86 +1,174 @@
 @import "tailwindcss";
 
+/* ──────────────────────────────────────────────
+   OncoDetect — Material Design 3 Dark Theme
+   Matches Google Stitch Reference Palette
+   ────────────────────────────────────────────── */
+
 @theme {
-  --color-bg-primary: #050505;
-  --color-bg-card: #0D1622;
-  --color-bg-card-hover: #111C2A;
-  --color-border: rgba(255, 255, 255, 0.07);
-  --color-text-primary: #E8EDF5;
-  --color-text-muted: #7A8DA8;
-  --color-accent-teal: #00D4A8;
-  --color-accent-blue: #0090FF;
-  --color-risk-high: #FF4444;
-  --color-risk-moderate: #FFBC42;
-  --color-risk-low: #00C853;
+  /* M3 Surface System */
+  --color-background: #131315;
+  --color-surface: #131315;
+  --color-surface-dim: #131315;
+  --color-surface-container-lowest: #0e0e10;
+  --color-surface-container-low: #1c1b1d;
+  --color-surface-container: #201f21;
+  --color-surface-container-high: #2a2a2c;
+  --color-surface-container-highest: #353437;
+  --color-surface-bright: #39393b;
+  --color-surface-variant: #353437;
+
+  /* M3 Primary */
+  --color-primary: #aec6ff;
+  --color-primary-container: #0070f3;
+  --color-primary-fixed: #d8e2ff;
+  --color-primary-fixed-dim: #aec6ff;
+  --color-on-primary: #002e6b;
+  --color-on-primary-container: #ffffff;
+  --color-on-primary-fixed: #001a43;
+  --color-inverse-primary: #0059c5;
+
+  /* M3 Secondary */
+  --color-secondary: #4edea3;
+  --color-secondary-container: #00a572;
+  --color-secondary-fixed: #6ffbbe;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-secondary: #003824;
+  --color-on-secondary-container: #00311f;
+  --color-on-secondary-fixed: #002113;
+
+  /* M3 Tertiary */
+  --color-tertiary: #ffb95f;
+  --color-tertiary-container: #a66900;
+  --color-tertiary-fixed: #ffddb8;
+  --color-tertiary-fixed-dim: #ffb95f;
+  --color-on-tertiary: #472a00;
+  --color-on-tertiary-container: #ffffff;
+
+  /* M3 Error */
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+
+  /* M3 Neutral */
+  --color-on-surface: #e5e1e4;
+  --color-on-surface-variant: #c1c6d7;
+  --color-on-background: #e5e1e4;
+  --color-outline: #8b90a0;
+  --color-outline-variant: #414754;
+  --color-inverse-surface: #e5e1e4;
+  --color-inverse-on-surface: #313032;
+  --color-surface-tint: #aec6ff;
+
+  /* Font families — Correct Tailwind v4 mapping */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline);
+  }
+
+  /* ── Material Symbols ── */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
 }
 
-html {
-  font-family: "Inter", "Segoe UI", sans-serif;
-  scroll-behavior: smooth;
-}
-
-:root {
-  color-scheme: dark;
-}
-
-body {
-  background-color: #050505;
-  color: #E8EDF5;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-image:
-    radial-gradient(circle at top left, rgba(0, 212, 168, 0.07), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(0, 144, 255, 0.06), transparent 30%);
-}
-
-#root {
-  min-height: 100vh;
-}
-
-/* Custom scrollbar */
+/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #131315;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 168, 0.3);
-  border-radius: 2px;
+  background: #353437;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 168, 0.5);
+  background: #414754;
 }
 
-/* Animated gradient orb background */
-@keyframes float1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(20px, -20px); }
+/* ── Glass Panel ── */
+.glass-panel {
+  background: rgba(28, 27, 29, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-@keyframes float2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-30px, 20px); }
+/* ── Data Grid Overlay ── */
+.data-grid-overlay {
+  background-image: radial-gradient(circle, rgba(174, 198, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-@keyframes float3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(25px, 25px); }
+/* ── Scanline Animation ── */
+.scanline {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #0070f3, transparent);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.5;
+  animation: scanning 4s linear infinite;
+}
+@keyframes scanning {
+  0% { top: 0; }
+  100% { top: 100%; }
 }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  80%, 100% { transform: scale(2.5); opacity: 0; }
+/* ── Glow Pulse ── */
+.glow-pulse {
+  box-shadow: 0 0 15px rgba(0, 112, 243, 0.3);
 }
 
+/* ── Recessed Input (Stitch Form Style) ── */
+.recessed-input {
+  background-color: #0e0e10;
+  border: none;
+  border-bottom: 1px solid rgba(174, 198, 255, 0.3);
+  transition: border-color 0.3s ease;
+}
+.recessed-input:focus {
+  outline: none;
+  border-bottom: 1px solid #0070f3;
+  box-shadow: none;
+}
+
+/* ── Logic Strips ── */
+.logic-strip-active { border-left: 2px solid #4edea3; }
+.logic-strip-safe { border-left: 2px solid #4edea3; }
+.logic-strip-caution { border-left: 2px solid #ffb95f; }
+.logic-strip-action { border-left: 2px solid #0070f3; }
+
+/* ── Animations ── */
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -96,142 +184,56 @@ body {
   100% { background-position: 200% 0; }
 }
 
-@keyframes progress-fill {
-  from { width: 0%; }
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  80%, 100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -20px); }
 }
 
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
 }
-
-.animate-float1 {
-  animation: float1 10s ease-in-out infinite;
-}
-
-.animate-float2 {
-  animation: float2 12s ease-in-out infinite;
-}
-
-.animate-float3 {
-  animation: float3 11s ease-in-out infinite;
-}
-
 .animate-slide-in-left {
   animation: slide-in-left 0.5s ease-out forwards;
 }
-
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(0, 112, 243, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
 .animate-float {
   animation: float1 8s ease-in-out infinite;
 }
 
-.animate-pulse-ring {
-  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 168, 0.1), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Staggered animation delays */
+/* Stagger delays */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 
-/* Glassmorphism card */
-.glass-card {
-  background: rgba(13, 22, 34, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 0;
-}
-
-.glass-card:hover {
-  background: rgba(17, 28, 42, 0.8);
-  border-color: rgba(0, 212, 168, 0.2);
-}
-
-/* Gradient orbs */
-.orb {
-  position: absolute;
-  border-radius: 0;
-  filter: blur(80px);
-  pointer-events: none;
-}
-
-.orb-teal {
-  background: radial-gradient(circle, rgba(0, 212, 168, 0.15), transparent 70%);
-}
-
-.orb-blue {
-  background: radial-gradient(circle, rgba(0, 144, 255, 0.12), transparent 70%);
-}
-
-/* Input styles */
-input, select, textarea {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: #00D4A8 !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 168, 0.15);
-}
-
-/* Toast animation */
+/* ── Toast ── */
 @keyframes toast-in {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 .toast-animate {
   animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ────────────────────────────────────
-   Animated SVG Logo (Square Design)
-   ──────────────────────────────────── */
-.logo-rect-1 {
-  stroke-dasharray: 140;
-  stroke-dashoffset: 0;
-  animation: logo-draw 4s ease-in-out infinite alternate;
+/* ── Input Global ── */
+input, select, textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.logo-rect-2 {
-  stroke-dasharray: 140;
-  stroke-dashoffset: 140;
-  animation: logo-draw 4s ease-in-out infinite alternate 1s;
-}
-.logo-rect-3 {
-  stroke-dasharray: 140;
-  stroke-dashoffset: 140;
-  animation: logo-draw 4s ease-in-out infinite alternate 2s;
-}
-.logo-rect-4 {
-  stroke-dasharray: 140;
-  stroke-dashoffset: 140;
-  animation: logo-draw 4s ease-in-out infinite alternate 3s;
-}
-.logo-cross {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: logo-cross-draw 2s ease-out forwards 1.5s;
-}
-
-@keyframes logo-draw {
-  0% { stroke-dashoffset: 140; }
-  50%, 100% { stroke-dashoffset: 0; }
-}
-
-@keyframes logo-cross-draw {
-  to { stroke-dashoffset: 0; }
-}
-
-.logo-svg:hover .logo-rect-1,
-.logo-svg:hover .logo-rect-2,
-.logo-svg:hover .logo-rect-3,
-.logo-svg:hover .logo-rect-4 {
-  animation-duration: 1.5s;
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #0070f3 !important;
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.15);
 }
