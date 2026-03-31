@@ -9,10 +9,24 @@ export default function Report() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [animProb, setAnimProb] = useState(0);
 
   useEffect(() => {
     api.get(`/api/reports/${id}`)
-      .then(res => setReport(res.data))
+      .then(res => {
+        setReport(res.data);
+        const target = Math.round((res.data.probabilityScore || 0) * 100);
+        let current = 0;
+        const interval = setInterval(() => {
+          current += 2;
+          if (current >= target) {
+            setAnimProb(target);
+            clearInterval(interval);
+          } else {
+            setAnimProb(current);
+          }
+        }, 30);
+      })
       .catch(() => navigate('/dashboard'))
       .finally(() => setLoading(false));
   }, [id, navigate]);
@@ -73,7 +87,6 @@ export default function Report() {
     );
   }
 
-  const prob = Math.round((report.probabilityScore || 0) * 100);
   const isHigh = (report.triageLevel || '').toLowerCase() === 'high';
 
   return (
@@ -87,16 +100,16 @@ export default function Report() {
             <span className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold font-headline">Clinical Result</span>
             <h1 className="text-xl font-bold text-on-surface font-headline uppercase tracking-tight">Final Assessment</h1>
           </div>
-          <div className={`p-6 rounded-2xl border ${isHigh ? 'bg-error-container/20 border-error/30' : 'bg-secondary-container/10 border-secondary/30'} flex flex-col items-center text-center gap-4 shadow-xl`}>
-            <span className={`material-symbols-outlined text-4xl ${isHigh ? 'text-error' : 'text-secondary'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+          <div className={`p-6 rounded-2xl border ${isHigh ? 'bg-error-container/20 border-error/30 shadow-[0_0_30px_rgba(255,68,68,0.15)]' : 'bg-secondary-container/10 border-secondary/30 shadow-[0_0_30px_rgba(0,212,168,0.1)]'} flex flex-col items-center text-center gap-4 shadow-xl transition-all duration-1000`}>
+            <span className={`material-symbols-outlined text-4xl ${isHigh ? 'text-error hover:scale-110 transition-transform' : 'text-secondary hover:scale-110 transition-transform'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
               {isHigh ? 'warning' : 'verified'}
             </span>
             <div>
               <p className={`text-[10px] font-bold uppercase tracking-widest ${isHigh ? 'text-error' : 'text-secondary'}`}>Triage Level</p>
-              <p className="text-2xl font-black font-headline uppercase mt-1">{report.triageLevel}</p>
+              <p className="text-2xl font-black font-headline uppercase mt-1 tracking-wider">{report.triageLevel}</p>
             </div>
-            <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mt-2">
-              <div className={`h-full ${isHigh ? 'bg-error' : 'bg-secondary'}`} style={{ width: `${prob}%` }}></div>
+            <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mt-2 relative">
+              <div className={`absolute top-0 left-0 h-full ${isHigh ? 'bg-error' : 'bg-secondary'} transition-all duration-75`} style={{ width: `${animProb}%` }}></div>
             </div>
           </div>
 
@@ -107,7 +120,7 @@ export default function Report() {
             </div>
             <div className="flex justify-between items-center text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
               <span>Probability</span>
-              <span className="text-on-surface">{prob}%</span>
+              <span className={`font-bold ${isHigh ? 'text-error' : 'text-secondary'} font-mono text-sm`}>{animProb}%</span>
             </div>
             <div className="flex justify-between items-center text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
               <span>Model</span>

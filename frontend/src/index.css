@@ -137,11 +137,43 @@
   top: 0;
   left: 0;
   opacity: 0.5;
-  animation: scanning 4s linear infinite;
+  animation: scanning 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 @keyframes scanning {
-  0% { top: 0; }
-  100% { top: 100%; }
+  0% { top: -10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+
+@keyframes typecode {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-typecode {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typecode 0.8s steps(40, end);
+}
+
+@keyframes type-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-type-fade {
+  animation: type-fade 0.3s ease-out forwards;
+}
+
+@keyframes grid-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(20px); }
+}
+
+.animate-grid-scroll {
+  animation: grid-scroll 2s linear infinite;
 }
 
 /* ── Glow Pulse ── */

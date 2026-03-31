@@ -151,10 +151,10 @@ export default function NewAnalysis() {
                         key={o.key}
                         type="button"
                         onClick={() => update('organType', o.key)}
-                        className={`group relative flex flex-col p-6 border rounded-xl text-left overflow-hidden transition-all duration-500 ${
+                        className={`group relative flex flex-col p-6 border rounded-xl text-left overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
                           form.organType === o.key
-                            ? `bg-${o.color}/10 border-${o.color}/50 shadow-[0_10px_30px_rgba(0,0,0,0.4)]`
-                            : 'bg-surface-container-highest/30 border-outline-variant/10 hover:border-primary/30 hover:bg-surface-container-highest/50'
+                            ? `bg-${o.color}/10 border-${o.color}/70 shadow-[0_0_20px_var(--color-${o.color})] scale-[1.02] z-10`
+                            : `bg-surface-container-highest/30 border-outline-variant/10 hover:border-${o.color}/50 hover:bg-surface-container-highest/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]`
                         }`}
                       >
                         <div className="absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700">
@@ -181,12 +181,12 @@ export default function NewAnalysis() {
                     onDragLeave={() => setDragActive(false)}
                     onDrop={handleDrop}
                     onClick={() => fileRef.current?.click()}
-                    className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-20 px-6 text-center cursor-pointer group transition-all duration-500 ${
+                    className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-20 px-6 text-center cursor-pointer group transition-all duration-500 relative overflow-hidden ${
                       dragActive
-                        ? 'border-primary bg-primary/5 shadow-inner'
+                        ? 'border-primary bg-primary/10 shadow-[0_0_30px_rgba(0,112,243,0.3)_inset] scale-[1.01]'
                         : file
-                          ? 'border-secondary/40 bg-secondary/5'
-                          : 'border-outline-variant/20 bg-surface-container-lowest/50 hover:bg-surface-container-low hover:border-primary/20'
+                          ? 'border-secondary/60 bg-secondary/5 shadow-[0_0_20px_rgba(0,212,168,0.1)]'
+                          : 'border-outline-variant/20 bg-surface-container-lowest/50 hover:bg-surface-container-low hover:border-primary/40 hover:shadow-[0_0_15px_rgba(0,112,243,0.1)] hover:-translate-y-1'
                     }`}
                   >
                     <input ref={fileRef} type="file" accept="image/*,.dcm" className="hidden" onChange={handleFileChange} />

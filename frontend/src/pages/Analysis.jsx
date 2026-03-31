@@ -227,7 +227,10 @@ export default function Analysis() {
                       <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-primary/80"></div>
                       <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-primary/80"></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                         <div className="w-32 h-32 border border-primary/20 rounded-full animate-ping opacity-20"></div>
+                         <div className="w-32 h-32 border border-primary/30 rounded-full animate-ping opacity-20"></div>
+                         <div className="absolute top-[20%] left-[30%] w-12 h-12 border border-secondary/50 rounded-full animate-[ping_2s_infinite] opacity-40 mix-blend-screen"></div>
+                         <div className="absolute bottom-[25%] right-[20%] w-8 h-8 border border-error/50 rounded-full animate-[ping_3s_infinite_1s] opacity-40 mix-blend-screen"></div>
+                         <div className="absolute top-[60%] left-[60%] w-16 h-16 border border-tertiary/30 rounded-full animate-[ping_2.5s_infinite_0.5s] opacity-30 mix-blend-screen"></div>
                       </div>
                     </>
                   ) : (
@@ -265,25 +268,29 @@ export default function Analysis() {
 
             {/* Terminal Sidebar */}
             <div className="col-span-12 md:col-span-4 flex flex-col gap-6 min-h-0">
-              <div className="flex-1 bg-black/40 border border-outline-variant/10 rounded-2xl flex flex-col overflow-hidden font-mono shadow-2xl">
-                <div className="bg-surface-container-low px-5 py-3 border-b border-outline-variant/10 flex justify-between items-center">
-                  <span className="text-on-surface-variant font-bold text-[10px] uppercase tracking-widest font-headline">Telemetry Console</span>
+              <div className="flex-1 bg-black/40 border border-outline-variant/10 rounded-2xl flex flex-col overflow-hidden font-mono shadow-2xl relative">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(174,198,255,0.03)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none animate-grid-scroll"></div>
+                <div className="bg-surface-container-low px-5 py-3 border-b border-outline-variant/10 flex justify-between items-center relative z-10">
+                  <span className="text-on-surface-variant font-bold text-[10px] uppercase tracking-widest font-headline flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                    Telemetry Console
+                  </span>
                   <div className="flex gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-error/40 border border-error/20"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-tertiary/40 border border-tertiary/20"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-secondary/40 border border-secondary/20"></div>
                   </div>
                 </div>
-                <div className="flex-1 p-5 text-[#aec6ff]/70 text-[11px] overflow-y-auto flex flex-col gap-2 leading-relaxed">
+                <div className="flex-1 p-5 text-[#aec6ff]/80 text-[11px] overflow-y-auto flex flex-col gap-3 leading-relaxed relative z-10">
                   {logs.map((L, i) => (
-                    <div key={i} className="flex gap-3">
-                      <span className="text-on-surface-variant/50 shrink-0">[{L.t}]</span>
-                      <span className={L.type === 'primary' ? 'text-primary font-bold' : L.type === 'pulse' ? 'text-primary animate-pulse font-black' : 'text-secondary'}>
+                    <div key={i} className="flex gap-3 animate-type-fade">
+                      <span className="text-on-surface-variant/40 shrink-0">[{L.t}]</span>
+                      <span className={`animate-typecode ${L.type === 'primary' ? 'text-primary font-bold drop-shadow-[0_0_5px_rgba(0,112,243,0.8)]' : L.type === 'pulse' ? 'text-secondary animate-pulse font-black' : 'text-primary/70'}`}>
                         {L.msg}
                       </span>
                     </div>
                   ))}
-                  {logs.length < logPool.length && !error && <div className="animate-pulse">_</div>}
+                  {logs.length < logPool.length && !error && <div className="animate-pulse text-primary font-bold">_</div>}
                 </div>
               </div>
 
