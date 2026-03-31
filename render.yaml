@@ -17,11 +17,12 @@ services:
     plan: free
 
   # Frontend — React Static
-  - type: static_site
+  - type: web
     name: oncodetect
+    runtime: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    publishPath: dist
+    staticPublishPath: dist
     envVars:
       - key: NODE_VERSION
         value: "20.19.0"
