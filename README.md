@@ -5,7 +5,6 @@
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white" />
   <img src="https://img.shields.io/badge/Llama_3.3_70B-Groq-f97316?style=flat-square&logo=meta&logoColor=white" />
-  <img src="https://img.shields.io/badge/Deploy-Render-46e3b7?style=flat-square&logo=render&logoColor=black" />
 </p>
 
 # OncoDetect
@@ -130,12 +129,13 @@ If no Groq API key is configured, the system gracefully falls back to a determin
 
 | Category | Details |
 |:---------|:--------|
-| **Authentication** | Demo login gate with token-based protected routes |
-| **Clinical Intake** | Multi-step wizard: demographics → organ selection → scan upload |
+| **Authentication** | Token-based protected routes with session validation on refresh and `/api/auth/me` |
+| **Clinical Intake** | Multi-step wizard with demographics, optional risk context, organ selection, and validated image upload |
 | **Live Analysis** | Real-time scanning animation with typing terminal, pipeline progress tracker, and resource telemetry |
-| **Reporting** | Structured clinical report with triage badge, reasoning trace, doctor & patient explanations |
+| **Reporting** | Structured clinical report with triage badge, reasoning trace, audit notes, copy summary, and PDF export |
 | **PDF Export** | Server-side PDF generation via ReportLab with proper list alignment and professional formatting |
 | **Case History** | All past analyses are saved to SQLite and browsable from the dashboard |
+| **Operational Readiness** | Health endpoint, startup env examples, backend tests, and deployment-oriented configuration cleanup |
 | **Responsive Design** | Flexbox-based layout with glassmorphism, neon accents, and dark mode throughout |
 
 ---
@@ -158,8 +158,11 @@ OncoDetect/
 │   │   ├── cases.py             # /api/analyze endpoint
 │   │   ├── history.py           # /api/reports endpoints
 │   │   └── report.py            # /api/report/generate (PDF)
+│   ├── tests/                   # Backend regression coverage
+│   ├── .env.example             # Backend environment template
 │   └── requirements.txt
 ├── frontend/
+│   ├── .env.example             # Frontend environment template
 │   ├── src/
 │   │   ├── pages/               # Entrance, SignIn, Dashboard, NewAnalysis, Analysis, Report
 │   │   ├── components/          # Navbar, AppLayout, Toast, ErrorBoundary
@@ -167,7 +170,7 @@ OncoDetect/
 │   │   └── lib/                 # Axios API client
 │   ├── index.html
 │   └── vite.config.js
-├── render.yaml                  # Render.com deployment blueprint
+├── render.yaml                  # Legacy Render blueprint kept for reference
 ├── start.sh                     # One-command local dev server
 └── README.md
 ```
@@ -189,10 +192,14 @@ OncoDetect/
 git clone https://github.com/vishva2410/ONCO-DETECT-.git
 cd ONCO-DETECT-
 
-# 2. (Optional) Add your Groq key
-echo "GROQ_API_KEY=your_key_here" > backend/.env
+# 2. Create local env files
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
 
-# 3. Start everything
+# 3. (Optional) Add your Groq key
+# edit backend/.env and set GROQ_API_KEY=your_key_here
+
+# 4. Start everything
 chmod +x start.sh && ./start.sh
 ```
 
@@ -203,8 +210,13 @@ The startup script handles virtual environment creation, dependency installation
 | Frontend | http://localhost:5173 |
 | Backend  | http://localhost:8000 |
 | API Docs | http://localhost:8000/docs |
+| Health   | http://localhost:8000/api/health |
 
-**Demo credentials:** `admin` / `password123`
+**Local development credentials:** `admin` / `password123`
+
+For deployed environments, set `DEFAULT_ADMIN_USERNAME`, `DEFAULT_ADMIN_PASSWORD`, and a strong `JWT_SECRET` in the backend service configuration.
+
+**Supported local upload formats:** `PNG`, `JPG`, and `WEBP`
 
 ---
 
@@ -213,6 +225,8 @@ The startup script handles virtual environment creation, dependency installation
 | Method | Endpoint | Description |
 |:-------|:---------|:------------|
 | `POST` | `/api/auth/login` | Authenticate and receive a bearer token |
+| `GET`  | `/api/auth/me` | Validate the current bearer token and return the active username |
+| `GET`  | `/api/health` | Check API/database readiness and runtime mode |
 | `POST` | `/api/analyze` | Submit patient data + scan for full pipeline analysis |
 | `GET`  | `/api/reports` | Retrieve all saved case reports |
 | `GET`  | `/api/reports/{id}` | Retrieve a specific report by ID |
@@ -220,13 +234,15 @@ The startup script handles virtual environment creation, dependency installation
 
 ---
 
-## Deployment (Render)
+## Deployment Prep
 
-This repository includes a `render.yaml` blueprint that configures:
-- **Backend:** FastAPI web service (Python 3.11)
-- **Frontend:** Vite static site with SPA rewrite rules
+The repository is now prepared for container-friendly deployment with:
+- explicit environment templates for frontend and backend
+- a health endpoint for readiness checks
+- authenticated smoke-test coverage for core API flows
+- startup configuration that avoids unsafe production defaults
 
-To deploy, connect this GitHub repository to [Render.com](https://render.com) via the **New Blueprint** option. Set the `GROQ_API_KEY` environment variable in the backend service settings.
+The existing `render.yaml` remains as a legacy reference only. In the next deployment pass, the recommended target will be a non-Render platform.
 
 ---
 

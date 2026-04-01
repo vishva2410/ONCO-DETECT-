@@ -8,10 +8,9 @@ export default function Analysis() {
   const navigate = useNavigate();
   const { patientData, scanFile, scanPreviewUrl, setReportData, addToast } = usePatient();
   const [progress, setProgress] = useState(0);
-  const [logs, setLogs] = useState([]);
-  const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const apiCalled = useRef(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const logPool = useMemo(() => [
     { t: '12:44:02', msg: 'INIT_INGESTION: Stream stability established', type: 'secondary' },
@@ -33,6 +32,7 @@ export default function Analysis() {
 
     if (apiCalled.current) return;
     apiCalled.current = true;
+    let isActive = true;
 
     const callApi = async () => {
       try {
@@ -52,6 +52,7 @@ export default function Analysis() {
         const res = await api.post('/api/analyze', formData);
         
         // Store full report data in context
+        if (!isActive) return;
         setReportData(res.data);
 
         // Navigate to report page using the reportId
@@ -65,16 +66,23 @@ export default function Analysis() {
           navigate('/dashboard');
         }
       } catch (err) {
+        if (!isActive) return;
         console.error('Analysis API error:', err);
         const msg = err.response?.data?.detail || 'Analysis failed. Please try again.';
         setError(msg);
         addToast(msg, 'error');
+      } finally {
+        apiCalled.current = false;
       }
     };
 
     // Start the API call immediately
     callApi();
-  }, [patientData, scanFile, navigate, addToast, setReportData]);
+    return () => {
+      isActive = false;
+      apiCalled.current = false;
+    };
+  }, [patientData, scanFile, navigate, addToast, setReportData, retryCount]);
 
   // Animate progress bar independently
   useEffect(() => {
@@ -91,14 +99,12 @@ export default function Analysis() {
     return () => clearInterval(interval);
   }, [error]);
 
-  // Update logs and step based on progress
-  useEffect(() => {
+  const logs = useMemo(() => {
     const logIdx = Math.floor((progress / 100) * logPool.length);
-    if (logIdx > logs.length && logIdx <= logPool.length) {
-      setLogs(logPool.slice(0, logIdx));
-    }
-    setStep(Math.min(5, Math.floor((progress / 100) * 6)));
-  }, [progress, logs.length, logPool]);
+    return logPool.slice(0, logIdx);
+  }, [progress, logPool]);
+
+  const step = Math.min(5, Math.floor((progress / 100) * 6));
 
   const steps = [
     { id: '01', label: 'Ingestion', icon: 'cloud_download' },
@@ -172,7 +178,12 @@ export default function Analysis() {
                 </div>
               </div>
               <button
-                onClick={() => { apiCalled.current = false; setError(null); setProgress(0); setLogs([]); setStep(0); }}
+                onClick={() => {
+                  apiCalled.current = false;
+                  setError(null);
+                  setProgress(0);
+                  setRetryCount(count => count + 1);
+                }}
                 className="px-6 py-3 bg-error text-on-error text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:brightness-110 transition-all font-headline"
               >
                 Retry Analysis
@@ -324,7 +335,7 @@ export default function Analysis() {
               {[
                 { label: 'Sequence ID', val: `ONCO-${patientData.organType?.toUpperCase()}-PRO-1` },
                 { label: 'Uptime', val: '00:14:22:04' },
-                { label: 'Encryption', val: 'AES-256-GCM' },
+                { label: 'Mode', val: 'LOCAL PROTOTYPE' },
               ].map((m, i) => (
                 <div key={i}>
                   <p className="text-[9px] text-on-surface-variant font-bold uppercase tracking-[0.2em] mb-1.5">{m.label}</p>

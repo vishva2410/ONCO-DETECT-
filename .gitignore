@@ -36,4 +36,5 @@ Thumbs.db
 *.log
 
 # ─── Local App Data ──────────────────────────────────
+oncodetect.db
 backend/oncodetect.db

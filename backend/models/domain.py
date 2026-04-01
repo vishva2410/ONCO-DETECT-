@@ -1,6 +1,7 @@
+from datetime import UTC, datetime
+
 from sqlalchemy import Column, String, Float, Boolean, JSON, DateTime
 from database import Base
-import datetime
 import uuid
 
 def generate_uuid():
@@ -12,13 +13,13 @@ class DoctorUser(Base):
     id = Column(String, primary_key=True, default=generate_uuid, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
 class PatientReport(Base):
     __tablename__ = "reports"
 
     id = Column(String, primary_key=True, default=generate_uuid, index=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
     
     # Demographics
     patient_id = Column(String, index=True)

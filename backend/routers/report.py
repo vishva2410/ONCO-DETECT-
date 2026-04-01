@@ -17,6 +17,7 @@ from reportlab.platypus import (
 )
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from pydantic import BaseModel
+from pydantic import Field
 from typing import List, Optional
 
 router = APIRouter()
@@ -38,7 +39,7 @@ class ReportRequest(BaseModel):
     confidenceNote: str
     auditFlags: List[str]
     auditPassed: bool
-    recommendations: List[str] = []
+    recommendations: List[str] = Field(default_factory=list)
     heatmapBase64: Optional[str] = None
     modelSource: Optional[str] = "resnet50"
 

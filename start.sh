@@ -4,7 +4,7 @@
 # Starts both the FastAPI backend and Vite frontend.
 # ======================================================
 
-set -e
+set -euo pipefail
 
 echo "\n\033[1;32m>>> OncoDetect: Starting services...\033[0m\n"
 
@@ -18,7 +18,7 @@ if [ ! -d ".venv" ]; then
 fi
 
 source .venv/bin/activate
-pip install -r requirements.txt -q
+python -m pip install --disable-pip-version-check -r requirements.txt -q
 
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
@@ -27,7 +27,7 @@ echo "  Backend PID: $BACKEND_PID"
 # ── Frontend ─────────────────────────────────────────
 echo "\033[0;36m[2/2] Starting Vite frontend on :5173...\033[0m"
 cd "../frontend"
-npm install --no-audit --no-fund --legacy-peer-deps -q
+npm ci --no-audit --no-fund --legacy-peer-deps -q
 npm run dev &
 FRONTEND_PID=$!
 echo "  Frontend PID: $FRONTEND_PID"

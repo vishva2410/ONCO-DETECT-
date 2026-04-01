@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from models.domain import PatientReport, DoctorUser
 from routers.auth import get_current_user
-import json
+from models.schemas import ReportDetail, ReportSaveResponse, ReportSummary
 
 router = APIRouter()
 
-@router.post("/reports", response_model=dict)
+@router.post("/reports", response_model=ReportSaveResponse)
 def save_report(
     data: dict, 
     db: Session = Depends(get_db),
@@ -44,9 +44,9 @@ def save_report(
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/reports", response_model=list)
+@router.get("/reports", response_model=list[ReportSummary])
 def get_history(
-    limit: int = 50, 
+    limit: int = Query(default=50, ge=1, le=200), 
     db: Session = Depends(get_db),
     current_user: DoctorUser = Depends(get_current_user)
 ):
@@ -66,7 +66,7 @@ def get_history(
         for r in reports
     ]
 
-@router.get("/reports/{report_id}", response_model=dict)
+@router.get("/reports/{report_id}", response_model=ReportDetail)
 def get_report(
     report_id: str, 
     db: Session = Depends(get_db),

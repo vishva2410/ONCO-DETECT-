@@ -12,7 +12,14 @@ from database import get_db
 from models.domain import DoctorUser
 from pydantic import BaseModel
 
-SECRET_KEY = os.getenv("JWT_SECRET", "ONCODETECT_SUPER_SECRET_KEY_123!")
+APP_ENV = os.getenv("APP_ENV", "development").lower()
+SECRET_KEY = os.getenv("JWT_SECRET")
+if not SECRET_KEY:
+    if APP_ENV in {"development", "dev", "local"}:
+        SECRET_KEY = "ONCODETECT_LOCAL_DEV_SECRET"
+    else:
+        raise RuntimeError("JWT_SECRET must be set outside development")
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -123,7 +130,22 @@ class RegisterRequest(BaseModel):
     username: str
     password: str
 
-@router.post("/auth/register")
+class RegisterResponse(BaseModel):
+    message: str
+    username: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    username: str
+
+
+class CurrentUserResponse(BaseModel):
+    username: str
+
+
+@router.post("/auth/register", response_model=RegisterResponse)
 def register_doctor(request: RegisterRequest, db: Session = Depends(get_db)):
     db_user = db.query(DoctorUser).filter(DoctorUser.username == request.username).first()
     if db_user:
@@ -136,7 +158,7 @@ def register_doctor(request: RegisterRequest, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return {"message": "Doctor registered successfully", "username": new_user.username}
 
-@router.post("/auth/login")
+@router.post("/auth/login", response_model=TokenResponse)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(DoctorUser).filter(DoctorUser.username == form_data.username).first()
     if (not user) or (not verify_password(form_data.password, user.hashed_password)):
@@ -151,3 +173,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer", "username": user.username}
+
+
+@router.get("/auth/me", response_model=CurrentUserResponse)
+def read_current_user(current_user: DoctorUser = Depends(get_current_user)):
+    return {"username": current_user.username}

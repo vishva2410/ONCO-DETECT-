@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
+import { getApiErrorMessage } from '../lib/api';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ export default function SignIn() {
     try {
       await login(formData.username, formData.password);
       navigate('/dashboard');
-    } catch {
-      setError('Invalid identity or token sequence. Access denied.');
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Invalid username or password.'));
       setIsSubmitting(false);
     }
   };
@@ -41,7 +42,7 @@ export default function SignIn() {
             <div className="h-0.5 w-12 bg-primary-container mb-4" />
             <p className="text-xs text-on-surface-variant tracking-wider uppercase text-center leading-relaxed" style={{ fontFamily: 'Space Grotesk' }}>
               SECURE_GATEWAY_V1.2<br />
-              <span className="text-secondary opacity-80">TEST_MODE: USE ID: admin / PASS: password123</span>
+              <span className="text-secondary opacity-80">LOCAL_DEV DEFAULT: admin / password123</span>
             </p>
           </div>
 
@@ -77,9 +78,9 @@ export default function SignIn() {
                 <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant" style={{ fontFamily: 'Space Grotesk' }}>
                   Credentials.Token
                 </label>
-                <button type="button" className="text-[10px] font-bold text-primary hover:underline tracking-widest uppercase">
-                  Request_Reset
-                </button>
+                <span className="text-[10px] font-bold text-on-surface-variant/60 tracking-widest uppercase">
+                  Local access
+                </span>
               </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -119,7 +120,7 @@ export default function SignIn() {
 
         {/* Footer */}
         <p className="mt-8 text-[10px] font-bold text-on-surface-variant/40 tracking-[0.3em] uppercase text-center" style={{ fontFamily: 'Space Grotesk' }}>
-          OncoDetect / Advanced Triage v1.2
+          OncoDetect / Research Prototype
         </p>
       </div>
     </div>

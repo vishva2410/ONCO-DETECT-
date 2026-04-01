@@ -6,3 +6,10 @@ groq==1.1.1
 python-dotenv==1.1.1
 reportlab==4.1.0
 sqlalchemy>=2.0.29
+numpy==2.4.4
+pillow==12.1.1
+huggingface_hub==1.8.0
+onnxruntime==1.24.4
+tensorflow==2.21.0
+torch==2.11.0
+transformers==5.4.0

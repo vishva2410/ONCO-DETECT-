@@ -47,15 +47,18 @@ For deployed environments, set:
 VITE_API_URL=https://your-api.example.com
 ```
 
-## Demo Login
+## Local Dev Login
 
 ```text
 username: admin
 password: password123
 ```
 
+For deployed environments, create credentials through the backend configuration instead of relying on the local development default.
+
 ## Notes
 
-- The frontend is designed as a cinematic healthcare product demo.
-- Protected routes require a valid auth token from the FastAPI backend.
-- The report screen supports history rehydration, copy summary, print, and PDF export.
+- The frontend is designed as a cinematic healthcare prototype with honest operational copy.
+- Protected routes require a valid auth token from the FastAPI backend and are revalidated on refresh.
+- The report screen supports history rehydration, copy summary, and PDF export.
+- The intake flow currently accepts PNG, JPG, and WEBP uploads for local analysis.
