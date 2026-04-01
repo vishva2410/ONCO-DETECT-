@@ -21,7 +21,7 @@ services:
     name: oncodetect
     runtime: static
     rootDir: frontend
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: NODE_VERSION
