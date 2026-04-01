@@ -156,7 +156,7 @@ export default function Report() {
               </div>
               <div className="text-right">
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-2 font-headline">Confidence Score</p>
-                <p className={`text-5xl font-black font-headline ${isHigh ? 'text-error' : 'text-primary'}`}>{prob}%</p>
+                <p className={`text-5xl font-black font-headline ${isHigh ? 'text-error' : 'text-primary'}`}>{animProb}%</p>
               </div>
             </div>
 
