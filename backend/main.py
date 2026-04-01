@@ -31,16 +31,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS — allow local dev + production frontend
-allowed_origins = ["http://localhost:5173"]
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url:
-    allowed_origins.append(frontend_url)
-
+# CORS — allow all for portfolio deployment flexibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"]
