@@ -8,7 +8,7 @@
 </p>
 
 # OncoDetect
-
+ 
 **OncoDetect** is a full-stack AI-powered cancer triage system that processes medical imaging scans (Brain MRI, Lung CT, Breast Mammography) through deep learning models, interprets the results using a large language model, and generates clinician-ready diagnostic reports — all within a single, seamless web application.
 
 > **Disclaimer:** This is a research prototype. It is not a certified medical device and must not be used for real clinical diagnosis.
